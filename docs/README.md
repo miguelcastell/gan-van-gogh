@@ -20,6 +20,8 @@
 5. [KDD e a exploração dos dados](guia/05-kdd.md)
 6. [DCGAN x WGAN-GP: a configuração, linha por linha](guia/06-dcgan-vs-wgan-gp.md)
 
+Consulta: [Glossário](guia/glossario.md), com os termos explicados ao longo do projeto.
+
 ## Convenções desta pasta
 
 - Arquivos em minúsculas, com hífen: `01-visao-geral.md`.

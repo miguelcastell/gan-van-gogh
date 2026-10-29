@@ -7,7 +7,6 @@ Convenções que valem para todo o projeto. Diferente de um ADR (que registra *u
 Um arquivo por tema, adicionado na tabela abaixo. Sugestões de temas futuros:
 
 - `codigo.md`: estilo, nomes de variáveis, comentários, organização de `src/`.
-- `git.md`: mensagens de commit, o que versionar e o que não versionar.
 - `reprodutibilidade.md`: seeds, versões de bibliotecas, como nomear experimentos.
 - `figuras.md`: padrão de figuras para o relatório (tamanho, títulos, legendas).
 
@@ -15,4 +14,4 @@ Um arquivo por tema, adicionado na tabela abaixo. Sugestões de temas futuros:
 
 | Documento | Tema |
 |---|---|
-| *(nenhum ainda)* | |
+| [git.md](git.md) | Padrão de commits (Conventional Commits), escopos e o que versionar |

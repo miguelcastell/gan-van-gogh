@@ -25,3 +25,4 @@ Um **ADR** (*Architecture Decision Record*) é um documento curto que registra *
 | [0002](0002-dataset-e-modelos.md) | Fashion-MNIST com DCGAN e WGAN-GP | Proposto | 2026-10-28 |
 | [0003](0003-dataset-em-memoria.md) | Carregar o dataset inteiro em memória | Aceito | 2026-10-28 |
 | [0004](0004-kdd-como-estrutura.md) | Usar o KDD para organizar o projeto e o relatório | Proposto | 2026-10-28 |
+| [0005](0005-sem-dvc.md) | Não usar DVC para versionar dados e modelos | Aceito | 2026-10-28 |

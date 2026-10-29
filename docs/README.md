@@ -18,6 +18,7 @@
 3. [Próximos passos: o que fazer agora](guia/03-proximos-passos.md)
 4. [Como aprender (e não só rodar)](guia/04-como-aprender.md)
 5. [KDD e a exploração dos dados](guia/05-kdd.md)
+6. [DCGAN x WGAN-GP: a configuração, linha por linha](guia/06-dcgan-vs-wgan-gp.md)
 
 ## Convenções desta pasta
 

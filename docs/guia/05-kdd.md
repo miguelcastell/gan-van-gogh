@@ -61,4 +61,4 @@ O notebook [`notebooks/01_exploracao.ipynb`](../../notebooks/01_exploracao.ipynb
 
 No final, a tabela de resumo do notebook deve virar um registro em [`experimentos/`](../experimentos/).
 
-Anterior: [Como aprender](04-como-aprender.md)
+Anterior: [Como aprender](04-como-aprender.md) · Próximo: [DCGAN x WGAN-GP](06-dcgan-vs-wgan-gp.md)

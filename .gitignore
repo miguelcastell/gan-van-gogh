@@ -1,0 +1,16 @@
+# Dataset (baixado automaticamente)
+data/
+
+# Checkpoints são pesados; grades, logs e métricas são versionados
+outputs/**/checkpoints/
+outputs/*.pt
+
+# Python / ambiente
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Configuração local do Claude Code
+.claude/

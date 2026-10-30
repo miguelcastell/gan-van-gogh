@@ -5,6 +5,12 @@ data/
 outputs/**/checkpoints/
 outputs/*.pt
 
+# Das grades por época, só as de 5 em 5 (as que os registros de experimento linkam).
+# Os GIFs (~12 MB cada) ficam só no computador local.
+outputs/**/samples/*.png
+!outputs/**/samples/epoch_*[05].png
+outputs/**/evolucao.gif
+
 # Python / ambiente
 __pycache__/
 *.pyc

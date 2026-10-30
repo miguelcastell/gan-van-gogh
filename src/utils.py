@@ -67,10 +67,20 @@ def to_float(x: torch.Tensor) -> torch.Tensor:
 
 
 def random_batch(x: torch.Tensor, batch_size: int, device: torch.device,
-                 flip: bool = True) -> torch.Tensor:
-    """Sorteia um batch, converte para [-1, 1] e espelha metade das imagens na horizontal."""
+                 flip: bool = True, crop: int | None = None) -> torch.Tensor:
+    """Sorteia um batch, converte para [-1, 1] e espelha metade das imagens na horizontal.
+
+    crop: recorta de cada imagem um quadrado crop x crop numa posição sorteada. Assim a mesma
+    pintura chega ao discriminador um pouco diferente a cada vez, e fica mais difícil decorá-la.
+    Os recortes são feitos na hora, em memória: nenhuma imagem nova é salva em disco.
+    """
     idx = torch.randint(0, x.size(0), (batch_size,))
-    batch = to_float(x[idx].to(device))
+    batch = x[idx]
+    if crop is not None and crop < batch.size(-1):
+        tops = torch.randint(0, batch.size(-2) - crop + 1, (batch_size,))
+        lefts = torch.randint(0, batch.size(-1) - crop + 1, (batch_size,))
+        batch = torch.stack([img[:, t:t + crop, l:l + crop] for img, t, l in zip(batch, tops, lefts)])
+    batch = to_float(batch.to(device))
     if flip:
         mask = torch.rand(batch_size, device=device) < 0.5
         batch[mask] = batch[mask].flip(-1)

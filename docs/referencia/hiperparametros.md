@@ -10,6 +10,7 @@ Todos os valores usados pelo código, com a origem de cada um. Conferidos no có
 | Início da queda do lr | `--decay-start` | metade das épocas (20) | Artigo: lr constante na 1ª metade, queda linear na 2ª. Com 40 épocas: lr = 2e-4 nas épocas 1 a 21, depois cai 5% do valor inicial por época até 1e-5 na época 40 (`lr_factor` em `src/train_cyclegan.py`; conferido no `logs.csv` do [primeiro treino](../experimentos/2026-10-29-primeiro-treino.md)) |
 | Fotos por época | `--photos` | todas (6.287) | Escolha nossa. Subconjunto sorteado com a seed |
 | Resolução | `--size` | 128 | Escolha nossa, pelo tempo. O artigo usa 256 |
+| Tamanho antes do recorte | `--load-size` | igual a `--size` (sem recorte) | Artigo: carrega em 286 e recorta 256 numa posição sorteada. Na nossa escala, 143 → 128. Só no treino: a avaliação e as grades usam a imagem inteira. Adicionado depois do [primeiro treino](../experimentos/2026-10-29-primeiro-treino.md), para dificultar o D_pintura decorar as 400 pinturas |
 | Batch | `--batch-size` | 1 | Artigo |
 | Learning rate | `--lr` | 2e-4 | Artigo |
 | Adam β1 / β2 | `--beta1` | 0,5 / 0,999 | Artigo |

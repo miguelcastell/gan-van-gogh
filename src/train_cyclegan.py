@@ -7,6 +7,7 @@ Uso (na raiz do projeto):
     python -m src.train_cyclegan --epochs 1 --photos 300    # teste rápido, mede o tempo
     python -m src.train_cyclegan --epochs 40
     python -m src.train_cyclegan --epochs 40 --sem-cycle    # comparação: sem cycle loss
+    python -m src.train_cyclegan --epochs 40 --load-size 143 # com recorte aleatório (aumento de dados)
     python -m src.train_cyclegan --resume outputs/cyclegan/checkpoints/epoch_010.pt
 """
 import argparse
@@ -29,6 +30,9 @@ def parse_args():
     p.add_argument("--photos", type=int, default=None,
                    help="usar só N fotos de treino (padrão: todas). Uma época = N passos")
     p.add_argument("--size", type=int, default=128)
+    p.add_argument("--load-size", type=int, default=None,
+                   help="carrega as imagens de treino nesse tamanho e recorta --size numa posição "
+                        "sorteada (o artigo usa 286 -> 256, ou seja, ~143 para 128). Padrão: sem recorte")
     p.add_argument("--batch-size", type=int, default=1)
     p.add_argument("--lr", type=float, default=2e-4)
     p.add_argument("--beta1", type=float, default=0.5)
@@ -50,6 +54,8 @@ def parse_args():
         args.lambda_cycle = 0.0
     if args.out is None:
         args.out = "cyclegan_sem_cycle" if args.sem_cycle else "cyclegan"
+    if args.load_size is None:
+        args.load_size = args.size
     if args.decay_start is None:
         args.decay_start = args.epochs // 2
     return args
@@ -96,8 +102,8 @@ def main():
     print(f"Dispositivo: {device} | saída: {out}")
     print(f"λ_cycle {args.lambda_cycle} | λ_identity {args.lambda_identity}")
 
-    pinturas = load_domain("pintura", train=True, size=args.size)
-    fotos = load_domain("foto", train=True, size=args.size)
+    pinturas = load_domain("pintura", train=True, size=args.load_size)
+    fotos = load_domain("foto", train=True, size=args.load_size)
     if args.photos is not None:
         fotos = fotos[torch.randperm(fotos.size(0))[:args.photos]]
     steps_per_epoch = fotos.size(0) // args.batch_size
@@ -150,8 +156,8 @@ def main():
         t0 = time.time()
         G.train(); F.train()
         for i in range(steps_per_epoch):
-            foto = random_batch(fotos, args.batch_size, device)
-            pintura = random_batch(pinturas, args.batch_size, device)
+            foto = random_batch(fotos, args.batch_size, device, crop=args.size)
+            pintura = random_batch(pinturas, args.batch_size, device, crop=args.size)
 
             # --- Geradores
             opt_g.zero_grad(set_to_none=True)

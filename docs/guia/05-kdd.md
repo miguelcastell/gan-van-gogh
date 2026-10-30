@@ -13,7 +13,16 @@ data/
     └── testB/    ← fotos de paisagens (teste)
 ```
 
-São arquivos JPEG coloridos de 256x256. "A" e "B" são só os nomes dos dois domínios: A = Van Gogh, B = foto. As quantidades exatas serão conferidas no notebook.
+São arquivos JPEG coloridos de 256x256 (RGB). "A" e "B" são só os nomes dos dois domínios: A = Van Gogh, B = foto.
+
+| Pasta | Imagens |
+|---|---|
+| `trainA` | 400 pinturas |
+| `testA` | 400 pinturas, **as mesmas do `trainA`** |
+| `trainB` | 6.287 fotos |
+| `testB` | 751 fotos |
+
+O `testA` ser uma cópia do `trainA` foi descoberto no notebook 01 e muda a avaliação (veja a [ADR 0002](../adr/0002-dataset-e-modelos.md)).
 
 A pasta `data/` está no `.gitignore`: o dataset é público e qualquer pessoa baixa da mesma fonte, então não vai para o GitHub.
 
@@ -43,7 +52,7 @@ Com imagens, boa parte da análise exploratória clássica não diz nada. Não h
 | Histograma de cores (pinturas x fotos) | Mostra em números o que o gerador precisa mudar: Van Gogh usa mais amarelo e azul saturados |
 | Imagem média de cada domínio | Mostra a composição típica: fotos de paisagem têm o céu em cima, e isso importa para a máscara |
 | Projeção 2D (PCA, t-SNE) | Achata as imagens em 2 dimensões para ver se pinturas e fotos formam grupos separados. É aprendizado não supervisionado, e na Etapa 4 dá para projetar as saídas da GAN no mesmo espaço e ver de que lado caem |
-| Quase-duplicatas teste → treino | É a referência do teste de memorização: mostra a distância "normal" entre uma pintura nova e as de treino |
+| Duplicatas teste → treino | Mostrou que as pinturas de teste são as mesmas do treino. Por isso a referência de memorização passou a ser a distância entre pinturas diferentes |
 | Origem dos dados | Pinturas de um único artista, coletadas do WikiArt; fotos de paisagens do Flickr. Material para a seção de viés |
 
 ## Como praticar

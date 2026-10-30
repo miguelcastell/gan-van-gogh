@@ -29,7 +29,10 @@ O enunciado pede uma GAN, uma comparação e avaliação de realismo, diversidad
 
 - **Limitação do resultado:** a CycleGAN aprende o **estilo geral** de Van Gogh a partir de centenas de pinturas, não a *Noite Estrelada* especificamente. O céu terá as pinceladas e as cores dele, mas não os redemoinhos exatos daquele quadro. Isso precisa estar claro no relatório.
 - **Treino pesado:** com a receita original (256x256, 200 épocas), o treino nessa GPU levaria dias. Com 128x128 e menos épocas, deve cair para horas. O número de épocas só será definido depois de medir o tempo de uma época.
-- **Desequilíbrio entre domínios:** há bem menos pinturas do que fotos. O risco é o discriminador de pinturas decorar o treino.
+- **Desequilíbrio entre domínios:** são 400 pinturas para 6.287 fotos de treino (15,7 fotos por pintura). O risco é o discriminador de pinturas decorar o treino.
+- **Não há pinturas de teste de verdade:** as 400 pinturas de `testA` são idênticas às 400 de `trainA` (distância 0, conferido no notebook 01). As fotos de teste (751) são separadas. Por isso, na avaliação ([`src/evaluate.py`](../../src/evaluate.py)):
+  - o FID/KID compara as fotos convertidas com as 400 pinturas;
+  - a referência de memorização é a distância de cada pintura até a mais parecida entre as **outras** pinturas, já que não existe pintura "nunca vista".
 - **Avaliação sem classes:** não há classes para medir diversidade como num dataset rotulado. Usaremos FID/KID contra as pinturas reais, a preservação do conteúdo (ida e volta) e o vizinho mais próximo para memorização.
 - **Ética:** o tema traz a discussão sobre imitação de estilo artístico, autoria e manipulação de fotos. A obra de Van Gogh é de domínio público, mas a mesma técnica copia o estilo de artistas vivos.
 

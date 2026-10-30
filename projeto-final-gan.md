@@ -95,7 +95,7 @@ resultado = estilizada onde é céu + original no resto
 | Épocas | A definir. Medido: ~130 ms por passo, ou ~13 min por época com todas as fotos | — |
 
 **Dicas para a sua máquina**
-- As imagens cabem na RAM (cerca de 7 mil imagens 128x128 coloridas ocupam uns 330 MB em `uint8`), então carregue tudo de uma vez e evite gargalo de disco.
+- As imagens cabem na RAM (as 7.838 imagens em 128x128 coloridas ocupam uns 385 MB em `uint8`), então carregue tudo de uma vez e evite gargalo de disco.
 - Monitore a VRAM com `nvidia-smi`.
 - Salve checkpoints a cada poucas épocas (`torch.save`): o treino vai levar horas.
 - Fixe as seeds (`torch.manual_seed`) para os experimentos serem reproduzíveis.
@@ -139,7 +139,8 @@ gan-van-gogh/
 
 ### Etapa 1: Ambiente e dados (até 04/11)
 - [ ] PyTorch com CUDA funcionando.
-- [ ] Baixar o `vangogh2photo` e explorar no notebook 01.
+- [x] Baixar o `vangogh2photo`.
+- [ ] Explorar os dados no notebook 01.
 - [ ] Montar o gerador, o discriminador e as losses no notebook 02 (o gabarito está em `src/`).
 - [ ] Primeiro treino curto, para medir o tempo de uma época.
 
@@ -158,7 +159,7 @@ gan-van-gogh/
 ### Etapa 4: Avaliação (até 25/11)
 - [ ] **Realismo do estilo:** FID e KID entre as fotos convertidas e as pinturas reais.
 - [ ] **Preservação do conteúdo:** quanto a foto muda ao ir e voltar (foto → pintura → foto).
-- [ ] **Memorização:** para cada saída, achar a pintura de treino mais parecida e mostrar os pares.
+- [ ] **Memorização:** para cada saída, achar a pintura mais parecida e mostrar os pares. Referência: a distância entre pinturas reais diferentes (não há pinturas de teste separadas: `testA` = `trainA`).
 - [ ] **Exemplos ruins:** máscaras erradas, artefatos, céus que viraram outra coisa.
 - [ ] Tabela comparativa: completa x sem *cycle loss*.
 

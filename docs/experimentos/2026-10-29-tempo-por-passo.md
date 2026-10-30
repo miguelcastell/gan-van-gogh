@@ -31,6 +31,7 @@ A primeira medição com o `cudnn.benchmark` ligado deu 328 ms. As seguintes fic
 - O passo é lento em relação ao gerador sozinho porque a CycleGAN roda um gerador **6 vezes** por passo (ida, volta e *identity*, nos dois sentidos), além dos dois discriminadores.
 - O `cudnn.benchmark` faz o cuDNN testar os algoritmos de convolução e ficar com o mais rápido. Como as imagens têm sempre o mesmo tamanho, isso vale a pena e passou a ficar sempre ligado no `src/train_cyclegan.py`.
 - O `--amp` ajuda pouco no passo inteiro, mas usa muito menos memória da GPU. Ficou como opção.
+- No notebook 02, já com o dataset real, o primeiro treino curto ficou em 174 a 191 ms por passo. O segundo, no mesmo kernel, subiu de 161 para 835 ms por passo. A causa não foi investigada: pode ser aquecimento do notebook (*thermal throttling*) ou a memória da GPU transbordando para a RAM, que o Windows permite e é bem mais lenta. Se acontecer de novo, vale olhar o `nvidia-smi` durante o treino.
 
 ## Conclusão e próximos passos
 

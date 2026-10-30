@@ -14,3 +14,4 @@ Um arquivo por experimento (treino, teste de hiperparâmetro, avaliação). Essa
 |---|---|---|---|
 | 2026-10-29 | [Tempo por passo de treino](2026-10-29-tempo-por-passo.md) | — | ~130 ms por passo: 40 épocas com 2.000 fotos levam cerca de 3 horas |
 | 2026-10-29 | [Primeiro treino: completa x sem cycle loss](2026-10-29-primeiro-treino.md) | `cyclegan`, `cyclegan_sem_cycle` | A completa chegou a FID 125 (fotos sem conversão: 180); sem *cycle loss*, o modelo colapsou (FID 221, diversidade 57 contra 138 das pinturas). Análise no notebook 03 |
+| 2026-10-30 | [Recorte aleatório no aumento de dados](2026-10-30-recorte-aleatorio.md) | `cyclegan_crop` | Em andamento |

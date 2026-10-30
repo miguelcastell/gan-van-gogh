@@ -79,6 +79,20 @@ def nearest_train_distance(queries, x_train, chunk=100, excluir_a_si_mesma=False
     return torch.cat(dists), torch.cat(idxs)
 
 
+@torch.no_grad()
+def diversidade(x, chunk=100):
+    """Distância L2 média entre todos os pares de imagens de um conjunto.
+
+    Se o gerador colapsa e devolve quase a mesma imagem para qualquer foto, esse valor despenca.
+    """
+    flat = x.flatten(1)
+    total = 0.0
+    for i in range(0, flat.size(0), chunk):
+        total += torch.cdist(flat[i:i + chunk], flat, compute_mode="donot_use_mm_for_euclid_dist").sum().item()
+    n = flat.size(0)
+    return total / (n * (n - 1))   # a diagonal (cada imagem com ela mesma) é 0 e fica de fora
+
+
 @torch.no_grad()  # só avaliamos: sem isso, o PyTorch guarda as contas de todas as imagens para um backward que nunca vem
 def main():
     args = parse_args()
@@ -116,6 +130,11 @@ def main():
         style_metrics(pinturas, fotos, device)
     print(f"FID {results['fid']:.1f} (fotos sem conversão: {results['fid_fotos_originais']:.1f}) "
           f"| KID {results['kid']:.4f} ± {results['kid_std']:.4f}")
+
+    # 1b) Diversidade: as saídas variam tanto quanto as pinturas reais? (detecta colapso de modo)
+    results["diversidade"] = diversidade(pint)
+    results["diversidade_pinturas"] = diversidade(pinturas)
+    print(f"Diversidade: saídas {results['diversidade']:.1f} | pinturas reais {results['diversidade_pinturas']:.1f}")
 
     # 2) Conteúdo: quanto a foto muda na ida e quanto se perde na ida e volta
     erro_volta = (volta - fotos).abs().flatten(1).mean(1)

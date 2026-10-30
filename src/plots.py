@@ -44,6 +44,8 @@ def comparison_table():
                      "FID": round(m["fid"], 1),
                      "FID fotos originais": round(m["fid_fotos_originais"], 1),
                      "KID": f"{m['kid']:.4f} ± {m['kid_std']:.4f}",
+                     "diversidade": round(m["diversidade"], 1),
+                     "diversidade pinturas": round(m["diversidade_pinturas"], 1),
                      "erro ida e volta": round(m["cycle_l1"], 3),
                      "dist. NN saída": round(m["nn_dist_fake_mean"], 1),
                      "dist. NN ref.": round(m["nn_dist_ref_mean"], 1)})

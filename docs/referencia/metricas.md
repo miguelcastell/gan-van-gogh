@@ -27,6 +27,8 @@ Calculado pelo `src/evaluate.py` sobre as **751 fotos de teste** (`testB`), que 
 | `fid` | FID entre G(fotos de teste) e as pinturas | Menor |
 | `kid`, `kid_std` | KID entre G(fotos de teste) e as pinturas: média e desvio padrão entre subconjuntos | Menor |
 | `fid_fotos_originais`, `kid_fotos_originais` | Os mesmos, com as fotos **sem conversão** | É a referência: o modelo deve ficar bem abaixo disso |
+| `diversidade` | Distância L2 média entre todos os pares de G(foto), nos pixels em [-1, 1] | Perto de `diversidade_pinturas`. Muito abaixo = **colapso de modo** (saídas parecidas demais entre si) |
+| `diversidade_pinturas` | O mesmo, entre as 400 pinturas reais (137,7) | É a referência |
 | `cycle_l1` | Média de `|F(G(foto)) − foto|`, com pixels em [-1, 1] | Menor: o conteúdo foi preservado |
 | `mudanca_l1` | Média de `|G(foto) − foto|` | Nem 0 (não mudou nada) nem muito alto (destruiu a foto) |
 | `nn_dist_fake_mean` | Distância L2 média de cada G(foto) até a pintura mais parecida | Perto da referência abaixo |
@@ -47,7 +49,7 @@ Usa as mesmas features do FID, mas compara os conjuntos com uma função de kern
 
 ### O que nenhuma métrica captura
 
-- O FID e o KID medem **estilo**, não preservação do conteúdo. Um gerador que ignora a foto e devolve uma pintura qualquer pode ter FID **melhor**. Por isso o `cycle_l1` vem junto.
+- O FID e o KID medem **estilo e variedade**, não preservação do conteúdo. Um gerador que ignora a foto pode ter FID **melhor**, desde que suas saídas continuem variadas. No primeiro treino isso aconteceu na época 15 do modelo sem *cycle loss* (FID 140,5 contra 144,5 da completa). Quando ele colapsou, o FID passou a punir (220,9). Por isso o `cycle_l1` e a `diversidade` vêm junto.
 - Nenhuma mede se o **céu** ficou bom. A máscara e a composição são avaliadas visualmente, com exemplos.
 - A distância em pixels para memorização só detecta cópias quase literais, não cópias de composição ou de pedaços.
 

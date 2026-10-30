@@ -56,7 +56,7 @@ src/
   stylize.py           aplica o céu de Van Gogh numa foto própria
   evaluate.py          FID/KID, preservação do conteúdo, memorização, piores saídas
   plots.py             curvas de treino e tabela comparativa
-notebooks/             guiados: 01 exploração dos dados, 02 montar e treinar a CycleGAN
+notebooks/             guiados: 01 exploração dos dados, 02 montar e treinar a CycleGAN, 03 análise do primeiro treino
 outputs/<experimento>/ grades por época, logs.csv, metrics.json, evolucao.gif
 report/                figuras, tabela comparativa e análise ética
 docs/                  guia de estudo, decisões (ADRs), boas práticas e diário de experimentos
@@ -108,6 +108,7 @@ jupyter lab
 Abra, em ordem:
 1. `notebooks/01_exploracao.ipynb`: os dados (KDD, fases 1 a 3).
 2. `notebooks/02_cyclegan.ipynb`: monta o gerador, o discriminador e as losses e faz um treino curto, com e sem *cycle loss*.
+3. `notebooks/03_analise_primeiro_treino.ipynb`: análise do primeiro treino longo (curvas, métricas, erros, testes de hipóteses e o que mudar).
 
 ### 4. Treino no terminal
 

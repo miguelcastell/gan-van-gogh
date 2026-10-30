@@ -5,15 +5,19 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from torchvision import datasets
+from PIL import Image
+from torchvision.transforms.functional import pil_to_tensor
 from torchvision.utils import save_image
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 OUTPUTS_DIR = ROOT / "outputs"
 
-CLASSES = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
-           "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"]
+DATASET_DIR = DATA_DIR / "vangogh2photo"
+DATASET_URL = "http://efrosgans.eecs.berkeley.edu/cyclegan/datasets/vangogh2photo.zip"
+
+# Os nomes A e B vêm do dataset: A = pinturas de Van Gogh, B = fotos.
+DOMAINS = {"pintura": "A", "foto": "B"}
 
 
 def set_seed(seed: int = 42) -> None:
@@ -27,24 +31,50 @@ def get_device() -> torch.device:
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def load_fashion_mnist(train: bool = True, device: torch.device | None = None):
-    """Carrega o Fashion-MNIST inteiro como tensor (N, 1, 28, 28) em [-1, 1].
+def load_domain(domain: str, train: bool = True, size: int = 128) -> torch.Tensor:
+    """Carrega todas as imagens de um domínio como tensor uint8 (N, 3, size, size).
 
-    A base cabe na RAM/VRAM, então evitamos DataLoader e gargalo de disco.
+    domain: "pintura" ou "foto". Ver ADR 0003: tudo em memória, em uint8, e a conversão
+    para [-1, 1] só acontece no batch (`to_float`). Na primeira vez as imagens são lidas
+    e redimensionadas; depois o resultado é lido de um cache .pt em data/.
     """
-    ds = datasets.FashionMNIST(DATA_DIR, train=train, download=True)
-    x = ds.data.float().div(127.5).sub(1.0).unsqueeze(1)
-    y = ds.targets.clone()
-    if device is not None:
-        x, y = x.to(device), y.to(device)
-    return x, y
+    folder = ("train" if train else "test") + DOMAINS[domain]
+    cache = DATA_DIR / f"vangogh2photo_{size}" / f"{folder}.pt"
+    if cache.exists():
+        return torch.load(cache)
+
+    paths = sorted((DATASET_DIR / folder).glob("*.jpg"))
+    if not paths:
+        raise FileNotFoundError(f"Nenhuma imagem em {DATASET_DIR / folder}. "
+                                "Rode antes: python -m src.download_data")
+    x = torch.stack([load_image(p, size) for p in paths])
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(x, cache)
+    return x
 
 
-def iterate_minibatches(x: torch.Tensor, batch_size: int, drop_last: bool = True):
-    idx = torch.randperm(x.size(0), device=x.device)
-    stop = x.size(0) - batch_size + 1 if drop_last else x.size(0)
-    for i in range(0, stop, batch_size):
-        yield x[idx[i:i + batch_size]]
+def load_image(path: Path, size: int | None = None) -> torch.Tensor:
+    """Lê uma imagem como tensor uint8 (3, H, W). Com `size`, redimensiona para size x size."""
+    img = Image.open(path).convert("RGB")
+    if size is not None:
+        img = img.resize((size, size), Image.BICUBIC)
+    return pil_to_tensor(img)
+
+
+def to_float(x: torch.Tensor) -> torch.Tensor:
+    """uint8 [0, 255] -> float [-1, 1], a mesma faixa da saída `tanh` do gerador."""
+    return x.float().div(127.5).sub(1.0)
+
+
+def random_batch(x: torch.Tensor, batch_size: int, device: torch.device,
+                 flip: bool = True) -> torch.Tensor:
+    """Sorteia um batch, converte para [-1, 1] e espelha metade das imagens na horizontal."""
+    idx = torch.randint(0, x.size(0), (batch_size,))
+    batch = to_float(x[idx].to(device))
+    if flip:
+        mask = torch.rand(batch_size, device=device) < 0.5
+        batch[mask] = batch[mask].flip(-1)
+    return batch
 
 
 def to_unit(x: torch.Tensor) -> torch.Tensor:
@@ -58,12 +88,13 @@ def save_grid(images: torch.Tensor, path: Path, nrow: int = 8) -> None:
 
 
 class CSVLogger:
-    def __init__(self, path: Path, fields: list[str]):
+    def __init__(self, path: Path, fields: list[str], append: bool = False):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
         self.fields = fields
-        with open(path, "w", newline="") as f:
-            csv.DictWriter(f, fieldnames=fields).writeheader()
+        if not (append and path.exists()):
+            with open(path, "w", newline="") as f:
+                csv.DictWriter(f, fieldnames=fields).writeheader()
 
     def log(self, row: dict) -> None:
         with open(self.path, "a", newline="") as f:
@@ -73,6 +104,13 @@ class CSVLogger:
 def save_checkpoint(path: Path, **state) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(state, path)
+
+
+def last_checkpoint(model_dir: Path) -> Path:
+    ckpts = sorted((model_dir / "checkpoints").glob("*.pt"))
+    if not ckpts:
+        raise FileNotFoundError(f"Nenhum checkpoint em {model_dir / 'checkpoints'}")
+    return ckpts[-1]
 
 
 def make_gif(samples_dir: Path, out_path: Path, fps: int = 4) -> None:

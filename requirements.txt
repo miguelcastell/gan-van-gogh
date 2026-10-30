@@ -1,5 +1,5 @@
 # Instale o PyTorch com CUDA ANTES, pelo comando gerado em https://pytorch.org/get-started/locally/
-# ex.: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+# ex.: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu132
 matplotlib
 numpy
 pandas
@@ -9,4 +9,5 @@ tqdm
 jupyterlab
 torchmetrics
 torch-fidelity
+transformers
 imageio

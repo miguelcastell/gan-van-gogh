@@ -1,82 +1,110 @@
-"""Gerador, Discriminador (DCGAN) e Crítico (WGAN-GP) para imagens 28x28."""
+"""Gerador ResNet e Discriminador PatchGAN da CycleGAN (Zhu et al., 2017).
+
+Explicação das peças: docs/guia/06-cyclegan-por-dentro.md.
+"""
 import torch
 import torch.nn as nn
 
-NZ = 100
-
 
 def weights_init(m: nn.Module) -> None:
-    """Inicialização recomendada no paper do DCGAN: N(0, 0.02)."""
+    """Inicialização usada no artigo da CycleGAN: N(0, 0.02)."""
     if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)):
         nn.init.normal_(m.weight, 0.0, 0.02)
-    elif isinstance(m, nn.BatchNorm2d):
-        nn.init.normal_(m.weight, 1.0, 0.02)
-        nn.init.zeros_(m.bias)
+        if m.bias is not None:
+            nn.init.zeros_(m.bias)
+
+
+class ResnetBlock(nn.Module):
+    """saída = entrada + correção. "Não mudar nada" é fácil: basta a correção ser zero."""
+
+    def __init__(self, ch: int):
+        super().__init__()
+        self.correcao = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(ch, ch, 3),
+            nn.InstanceNorm2d(ch),
+            nn.ReLU(True),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(ch, ch, 3),
+            nn.InstanceNorm2d(ch),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return x + self.correcao(x)
 
 
 class Generator(nn.Module):
-    """z (N, 100) -> imagem (N, 1, 28, 28) em [-1, 1]."""
+    """Imagem (N, 3, H, W) em [-1, 1] -> imagem (N, 3, H, W) em [-1, 1].
 
-    def __init__(self, nz: int = NZ, ngf: int = 64):
+    É totalmente convolucional: treina em 128x128, mas aceita qualquer H e W múltiplos de 4.
+    """
+
+    def __init__(self, ngf: int = 64, n_blocks: int = 6):
         super().__init__()
-        self.net = nn.Sequential(
-            # (nz, 1, 1) -> (ngf*4, 7, 7)
-            nn.ConvTranspose2d(nz, ngf * 4, 7, 1, 0, bias=False),
-            nn.BatchNorm2d(ngf * 4),
+        layers = [
+            # Codificador: (3, 128, 128) -> (ngf, 128, 128)
+            nn.ReflectionPad2d(3),
+            nn.Conv2d(3, ngf, 7),
+            nn.InstanceNorm2d(ngf),
             nn.ReLU(True),
-            # -> (ngf*2, 14, 14)
-            nn.ConvTranspose2d(ngf * 4, ngf * 2, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(ngf * 2),
+            # -> (ngf*2, 64, 64)
+            nn.Conv2d(ngf, ngf * 2, 3, 2, 1),
+            nn.InstanceNorm2d(ngf * 2),
             nn.ReLU(True),
-            # -> (1, 28, 28)
-            nn.ConvTranspose2d(ngf * 2, 1, 4, 2, 1, bias=False),
+            # -> (ngf*4, 32, 32)
+            nn.Conv2d(ngf * 2, ngf * 4, 3, 2, 1),
+            nn.InstanceNorm2d(ngf * 4),
+            nn.ReLU(True),
+        ]
+        # Transformação: os blocos residuais mantêm o tamanho (ngf*4, 32, 32)
+        layers += [ResnetBlock(ngf * 4) for _ in range(n_blocks)]
+        layers += [
+            # Decodificador: -> (ngf*2, 64, 64)
+            nn.ConvTranspose2d(ngf * 4, ngf * 2, 3, 2, 1, output_padding=1),
+            nn.InstanceNorm2d(ngf * 2),
+            nn.ReLU(True),
+            # -> (ngf, 128, 128)
+            nn.ConvTranspose2d(ngf * 2, ngf, 3, 2, 1, output_padding=1),
+            nn.InstanceNorm2d(ngf),
+            nn.ReLU(True),
+            # -> (3, 128, 128)
+            nn.ReflectionPad2d(3),
+            nn.Conv2d(ngf, 3, 7),
             nn.Tanh(),
-        )
+        ]
+        self.net = nn.Sequential(*layers)
 
-    def forward(self, z: torch.Tensor) -> torch.Tensor:
-        return self.net(z.view(z.size(0), -1, 1, 1))
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
 
 
-class Discriminator(nn.Module):
-    """Imagem -> logit (sem sigmoid; usar BCEWithLogitsLoss)."""
+class PatchDiscriminator(nn.Module):
+    """Imagem (N, 3, 128, 128) -> grade de notas (N, 1, 14, 14), sem sigmoid (LSGAN).
 
-    def __init__(self, ndf: int = 64, batchnorm: bool = True):
+    Cada nota da grade julga um pedaço de ~70x70 pixels da imagem.
+    """
+
+    def __init__(self, ndf: int = 64):
         super().__init__()
-        norm = nn.BatchNorm2d(ndf * 2) if batchnorm else nn.Identity()
         self.net = nn.Sequential(
-            # (1, 28, 28) -> (ndf, 14, 14)
-            nn.Conv2d(1, ndf, 4, 2, 1, bias=False),
-            nn.LeakyReLU(0.2, inplace=True),
-            # -> (ndf*2, 7, 7)
-            nn.Conv2d(ndf, ndf * 2, 4, 2, 1, bias=False),
-            norm,
-            nn.LeakyReLU(0.2, inplace=True),
-            # -> (1, 1, 1)
-            nn.Conv2d(ndf * 2, 1, 7, 1, 0, bias=False),
+            # (3, 128, 128) -> (ndf, 64, 64). Sem norm na primeira camada, como no artigo.
+            nn.Conv2d(3, ndf, 4, 2, 1),
+            nn.LeakyReLU(0.2, True),
+            # -> (ndf*2, 32, 32)
+            nn.Conv2d(ndf, ndf * 2, 4, 2, 1),
+            nn.InstanceNorm2d(ndf * 2),
+            nn.LeakyReLU(0.2, True),
+            # -> (ndf*4, 16, 16)
+            nn.Conv2d(ndf * 2, ndf * 4, 4, 2, 1),
+            nn.InstanceNorm2d(ndf * 4),
+            nn.LeakyReLU(0.2, True),
+            # -> (ndf*8, 15, 15)
+            nn.Conv2d(ndf * 4, ndf * 8, 4, 1, 1),
+            nn.InstanceNorm2d(ndf * 8),
+            nn.LeakyReLU(0.2, True),
+            # -> (1, 14, 14): uma nota por pedaço
+            nn.Conv2d(ndf * 8, 1, 4, 1, 1),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.net(x).view(-1)
-
-
-def Critic(ndf: int = 64) -> Discriminator:
-    """Crítico da WGAN-GP: mesma arquitetura, sem BatchNorm (incompatível com o gradient penalty)."""
-    return Discriminator(ndf=ndf, batchnorm=False)
-
-
-class Classifier(nn.Module):
-    """CNN simples para classificar Fashion-MNIST (usada na avaliação de diversidade)."""
-
-    def __init__(self):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
-        )
-        self.head = nn.Sequential(
-            nn.Flatten(), nn.Linear(64 * 7 * 7, 128), nn.ReLU(),
-            nn.Dropout(0.3), nn.Linear(128, 10),
-        )
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.head(self.features(x))
+        return self.net(x)

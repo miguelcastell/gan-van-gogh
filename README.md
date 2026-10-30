@@ -169,7 +169,7 @@ As seeds são fixas (`--seed`) para os experimentos serem reproduzíveis.
 
 ## Documentação
 
-[`docs/README.md`](docs/README.md) reúne o guia de estudo, as decisões técnicas (ADRs), as boas práticas e o diário de experimentos.
+[`docs/README.md`](docs/README.md) reúne o guia de estudo, as decisões técnicas (ADRs), as boas práticas, o diário de experimentos e as fichas de referência ([dados](docs/referencia/dados.md), [hiperparâmetros](docs/referencia/hiperparametros.md) e [métricas](docs/referencia/metricas.md)).
 
 ## Referências
 

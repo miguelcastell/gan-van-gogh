@@ -22,7 +22,7 @@ São arquivos JPEG coloridos de 256x256 (RGB). "A" e "B" são só os nomes dos d
 | `trainB` | 6.287 fotos |
 | `testB` | 751 fotos |
 
-O `testA` ser uma cópia do `trainA` foi descoberto no notebook 01 e muda a avaliação (veja a [ADR 0002](../adr/0002-dataset-e-modelos.md)).
+O `testA` ser uma cópia do `trainA` foi descoberto no notebook 01 e muda a avaliação (veja a [ADR 0002](../adr/0002-dataset-e-modelos.md)). Os detalhes completos (duplicatas, uso de cada conjunto, pré-processamento) estão na [ficha dos dados](../referencia/dados.md).
 
 A pasta `data/` está no `.gitignore`: o dataset é público e qualquer pessoa baixa da mesma fonte, então não vai para o GitHub.
 

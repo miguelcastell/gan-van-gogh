@@ -10,6 +10,7 @@
 | [`adr/`](adr/) | *Architecture Decision Records*: decisões técnicas e o porquê delas | Sempre que escolher entre alternativas (modelo, métrica, hiperparâmetro...) |
 | [`boas-praticas/`](boas-praticas/) | Convenções do projeto (código, git, nomes, reprodutibilidade) | Quando definir uma regra que deve valer para todo o projeto |
 | [`experimentos/`](experimentos/) | Diário de experimentos: o que rodou, o que esperava, o que aconteceu | A cada treino ou teste relevante |
+| [`referencia/`](referencia/) | Fichas técnicas com os números exatos: dados, hiperparâmetros, métricas. Fonte da metodologia do artigo | Sempre que os dados, um padrão do código ou o ambiente mudarem |
 
 ## Guia de estudo
 

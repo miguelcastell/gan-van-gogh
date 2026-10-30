@@ -77,6 +77,7 @@ python -m venv .venv
 # PyTorch com CUDA (gere o comando certo para a sua máquina em https://pytorch.org/get-started/locally/)
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu132
 pip install -r requirements.txt
+nbstripout --install          # o git passa a ignorar as saídas dos notebooks
 
 python -m src.download_data     # baixa o dataset (~300 MB) em data/vangogh2photo/
 ```

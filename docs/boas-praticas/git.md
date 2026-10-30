@@ -53,5 +53,7 @@ Se o commit afeta várias partes, omita o escopo.
 - **Um assunto por commit.** Se a descrição precisa de "e", provavelmente são dois commits.
 - **Autoria somente do autor do projeto.** Sem linhas de coautoria (`Co-Authored-By`) de ferramentas.
 - **Não versionar:** o dataset (`data/`), os checkpoints (`outputs/**/checkpoints/`), o ambiente virtual (`.venv/`) e a configuração local (`.claude/`). Tudo já está no `.gitignore`.
-- **Versionar:** o código, os notebooks **sem saídas pesadas**, os logs (`logs.csv`), as métricas (`metrics.json`), as grades finais e as figuras do relatório.
+- **Versionar:** o código, os notebooks **sem saídas**, os logs (`logs.csv`), as métricas (`metrics.json`), as grades finais e as figuras do relatório.
+- **Saídas dos notebooks nunca vão para o git.** O [nbstripout](https://github.com/kynan/nbstripout) apaga as saídas automaticamente no `git add`, só na versão versionada: no seu computador o notebook continua com tudo. As respostas ✍️ ficam, porque são células de texto. Está configurado pelo `.gitattributes`, mas o filtro em si fica no `.git/config`, que não é versionado: em um clone novo, rode `nbstripout --install`.
+  **Por quê:** as saídas têm imagens e gráficos (um notebook executado passa de 8 MB), mudam a cada execução e poluiriam o histórico e os diffs. As figuras que importam vão para `report/figuras/`.
 - Operações no GitHub (repositório, PRs) são feitas pelo `gh`.

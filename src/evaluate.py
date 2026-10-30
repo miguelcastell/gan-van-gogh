@@ -57,18 +57,29 @@ def style_metrics(real, fake, device, batch=50):
 
 
 @torch.no_grad()
-def nearest_train_distance(queries, x_train, chunk=100):
-    """Distância L2 (em pixels) e índice do vizinho mais próximo no treino."""
+def nearest_train_distance(queries, x_train, chunk=100, excluir_a_si_mesma=False):
+    """Distância L2 (em pixels) e índice do vizinho mais próximo no treino.
+
+    Com excluir_a_si_mesma=True (queries == x_train), cada imagem ignora a si mesma
+    e acha a mais parecida entre as OUTRAS.
+    """
     train_flat = x_train.flatten(1)
     dists, idxs = [], []
     for i in range(0, queries.size(0), chunk):
-        d = torch.cdist(queries[i:i + chunk].flatten(1), train_flat)
+        # O modo padrão do cdist usa um atalho com multiplicação de matrizes que erra
+        # a distância de imagens quase iguais. Aqui a conta é feita do jeito exato.
+        d = torch.cdist(queries[i:i + chunk].flatten(1), train_flat,
+                        compute_mode="donot_use_mm_for_euclid_dist")
+        if excluir_a_si_mesma:
+            rows = torch.arange(d.size(0), device=d.device)
+            d[rows, rows + i] = float("inf")
         m, j = d.min(dim=1)
         dists.append(m)
         idxs.append(j)
     return torch.cat(dists), torch.cat(idxs)
 
 
+@torch.no_grad()  # só avaliamos: sem isso, o PyTorch guarda as contas de todas as imagens para um backward que nunca vem
 def main():
     args = parse_args()
     set_seed(args.seed)
@@ -87,20 +98,22 @@ def main():
     F.load_state_dict(ckpt["F"])
 
     fotos_teste = load_domain("foto", train=False, size=size)
-    pinturas_teste = to_float(load_domain("pintura", train=False, size=size))
-    pinturas_treino = to_float(load_domain("pintura", train=True, size=size)).to(device)
+    # No vangogh2photo, as 400 pinturas de teste são as mesmas 400 do treino (notebook 01,
+    # TODO 4). Não existe pintura "nunca vista": a referência são as 400 pinturas.
+    pinturas = to_float(load_domain("pintura", train=True, size=size)).to(device)
 
     fotos = to_float(fotos_teste).to(device)
     pint = translate(G, fotos_teste, device)                       # G(foto)
     volta = torch.cat([F(pint[i:i + 16]) for i in range(0, pint.size(0), 16)])  # F(G(foto))
     results = {"model": args.model, "checkpoint": ckpt_path.name,
-               "lambda_cycle": ckpt["args"]["lambda_cycle"], "n_fotos": fotos.size(0)}
+               "lambda_cycle": ckpt["args"]["lambda_cycle"], "n_fotos": fotos.size(0),
+               "n_pinturas": pinturas.size(0)}
 
     # 1) Estilo: as fotos convertidas se parecem com pinturas reais de Van Gogh?
     #    Referência: as fotos SEM conversão. Quanto o modelo aproximou as fotos das pinturas?
-    results["fid"], results["kid"], results["kid_std"] = style_metrics(pinturas_teste, pint, device)
+    results["fid"], results["kid"], results["kid_std"] = style_metrics(pinturas, pint, device)
     results["fid_fotos_originais"], results["kid_fotos_originais"], _ = \
-        style_metrics(pinturas_teste, fotos, device)
+        style_metrics(pinturas, fotos, device)
     print(f"FID {results['fid']:.1f} (fotos sem conversão: {results['fid_fotos_originais']:.1f}) "
           f"| KID {results['kid']:.4f} ± {results['kid_std']:.4f}")
 
@@ -111,24 +124,23 @@ def main():
     print(f"Erro de ida e volta (L1) {results['cycle_l1']:.3f} | mudança foto -> pintura {results['mudanca_l1']:.3f}")
 
     # 3) Memorização: a saída é parecida demais com alguma pintura de treino?
-    #    Referência: a distância de uma pintura de teste (real, não vista) até o treino.
-    d_fake, nn_idx = nearest_train_distance(pint, pinturas_treino)
-    d_ref, _ = nearest_train_distance(pinturas_teste.to(device), pinturas_treino)
+    #    Referência: a distância de cada pintura real até a mais parecida entre as OUTRAS,
+    #    ou seja, o quanto duas pinturas diferentes de Van Gogh costumam se parecer.
+    d_fake, nn_idx = nearest_train_distance(pint, pinturas)
+    d_ref, _ = nearest_train_distance(pinturas, pinturas, excluir_a_si_mesma=True)
     results["nn_dist_fake_mean"] = d_fake.mean().item()
     results["nn_dist_ref_mean"] = d_ref.mean().item()
     results["nn_dist_fake_min"] = d_fake.min().item()
-    print(f"Dist. vizinho mais próximo: saídas {d_fake.mean():.1f} | pinturas de teste {d_ref.mean():.1f}")
-    if d_ref.min() < 1e-3:
-        print("Atenção: há pinturas de teste idênticas a pinturas de treino; a referência fica distorcida.")
+    print(f"Dist. vizinho mais próximo: saídas {d_fake.mean():.1f} | entre pinturas reais {d_ref.mean():.1f}")
 
     closest = d_fake.argsort()[:8]  # pares mais suspeitos de cópia
-    pairs = torch.stack([pint[closest], pinturas_treino[nn_idx[closest]]], dim=1).flatten(0, 1)
+    pairs = torch.stack([pint[closest], pinturas[nn_idx[closest]]], dim=1).flatten(0, 1)
     save_grid(pairs, FIG_DIR / f"{args.model}_vizinhos.png", nrow=2)
 
     fig, ax = plt.subplots(figsize=(6, 3.5))
-    ax.hist(d_ref.cpu(), bins=40, alpha=0.6, density=True, label="pintura de teste → treino")
+    ax.hist(d_ref.cpu(), bins=40, alpha=0.6, density=True, label="pintura real → outra pintura")
     ax.hist(d_fake.cpu(), bins=40, alpha=0.6, density=True, label="saída → treino")
-    ax.set_xlabel("distância L2 à pintura de treino mais próxima")
+    ax.set_xlabel("distância L2 à pintura real mais próxima")
     ax.legend()
     plt.tight_layout()
     plt.savefig(FIG_DIR / f"{args.model}_memorizacao.png", dpi=150)

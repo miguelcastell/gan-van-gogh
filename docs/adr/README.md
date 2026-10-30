@@ -27,3 +27,4 @@ Um **ADR** (*Architecture Decision Record*) é um documento curto que registra *
 | [0004](0004-kdd-como-estrutura.md) | Usar o KDD para organizar o projeto e o relatório | Proposto | 2026-10-28 |
 | [0005](0005-sem-dvc.md) | Não usar DVC para versionar dados e modelos | Aceito | 2026-10-28 |
 | [0006](0006-notebooks-e-scripts.md) | Notebooks guiados para aprender, scripts para o treino longo | Aceito | 2026-10-29 |
+| [0007](0007-rastreamento-sem-mlflow.md) | Rastrear os experimentos com arquivos e git, sem MLflow | Proposto | 2026-10-29 |

@@ -5,7 +5,7 @@
 
 ## Contexto
 
-O relatório precisa mostrar o caminho do dado bruto até a avaliação dos modelos. A disciplina é de Aprendizado Não Supervisionado, em que o processo KDD é uma referência conhecida. Com imagens já limpas e balanceadas, uma análise exploratória extensa teria pouco valor.
+O relatório precisa mostrar o caminho do dado bruto até a avaliação do modelo. A disciplina é de Aprendizado Não Supervisionado, em que o processo KDD é uma referência conhecida. Com imagens, uma análise exploratória extensa teria pouco valor.
 
 ## Decisão
 

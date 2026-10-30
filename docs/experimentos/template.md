@@ -1,7 +1,7 @@
 # Experimento: nome curto
 
 - **Data:** AAAA-MM-DD
-- **Comando:** `python -m src.train_dcgan --epochs 3 --out ...`
+- **Comando:** `python -m src.train_cyclegan --epochs 1 --out ...`
 - **Pasta de saída:** `outputs/...`
 
 ## Pergunta

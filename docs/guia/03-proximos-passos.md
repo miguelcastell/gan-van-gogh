@@ -2,49 +2,52 @@
 
 Marque os itens conforme for concluindo.
 
-## Hoje (cerca de 1h): ambiente funcionando
+## Feito: ambiente e dados
 
-O PyTorch instalado globalmente no computador é a versão só para CPU (não usa a placa de vídeo) e está em conflito com o NumPy 2. Por isso o primeiro passo é um ambiente virtual próprio.
+O venv tinha o PyTorch **só para CPU** (`2.15.0+cpu`). Ele foi trocado pela versão com CUDA (`2.15.0+cu132`), escolhida porque o driver da placa suporta CUDA até 13.3 (veja com `nvidia-smi`).
 
-No terminal, dentro da pasta `gan`:
+- [x] Venv criado e PyTorch com CUDA instalado
+- [x] `python -c "import torch; print(torch.cuda.is_available())"` imprime `True`
+- [x] Dataset baixado com `python -m src.download_data`. Ele vem de http://efrosgans.eecs.berkeley.edu/cyclegan/datasets/vangogh2photo.zip e fica em `data/vangogh2photo/`
+
+## Agora: entender os dados (notebook 01)
+
+Para abrir os notebooks, com o venv ativado, na raiz do projeto:
 
 ```powershell
-python -m venv .venv
 .venv\Scripts\activate
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-pip install -r requirements.txt
-python -c "import torch; print(torch.cuda.is_available())"
+jupyter lab
 ```
 
-- [ ] Venv criado e ativado
-- [ ] PyTorch com CUDA instalado (confirme o comando em https://pytorch.org/get-started/locally/)
-- [ ] O último comando imprime `True`
+Antes, leia o [guia 05 (KDD)](05-kdd.md).
 
-## Depois: entender os dados
+- [ ] Completar os TODOs de `notebooks/01_exploracao.ipynb` e responder às perguntas
+- [ ] Preencher a tabela de resumo no final e pedir para registrar em [`experimentos/`](../experimentos/)
 
-O notebook é guiado: você completa os `TODO`s e responde às perguntas. Antes, leia o [guia 05 (KDD)](05-kdd.md).
+## Depois: montar a CycleGAN (notebook 02)
 
-- [ ] Rodar `jupyter lab`, abrir `notebooks/01_exploracao.ipynb` e completar os TODOs 1 a 10
-- [ ] Preencher a tabela de resumo no final do notebook e registrar em [`experimentos/`](../experimentos/)
+Antes, leia o [guia 06 (a CycleGAN por dentro)](06-cyclegan-por-dentro.md).
 
-## Depois: primeiro treino curto, já na GPU
+- [ ] Completar os TODOs de `notebooks/02_cyclegan.ipynb`: bloco residual, gerador, discriminador e as três losses
+- [ ] Rodar o treino curto (300 passos) com e sem *cycle loss*, **escrevendo a previsão antes**
+- [ ] Registrar as previsões e o que observou em [`experimentos/`](../experimentos/)
+
+## Depois: o treino longo, no terminal
+
+O treino longo roda no terminal, não no notebook ([ADR 0006](../adr/0006-notebooks-e-scripts.md)).
 
 ```powershell
-python -m src.train_dcgan --epochs 3
+python -m src.train_cyclegan --epochs 1 --photos 300
 ```
 
-- [ ] Abrir `outputs/dcgan/samples/` e comparar `epoch_001.png` com `epoch_003.png`
-- [ ] Registrar o resultado em [`experimentos/`](../experimentos/)
-
-Ver o borrão virar roupa é o momento em que a GAN começa a fazer sentido.
+- [ ] Conferir o tempo por passo com o dataset real. Com imagens falsas deu ~130 ms ([experimento](../experimentos/2026-10-29-tempo-por-passo.md))
+- [ ] Decidir o número de épocas e de fotos ([ADR 0002](../adr/0002-dataset-e-modelos.md), seção "Em aberto")
+- [ ] Rodar o treino completo e a versão `--sem-cycle`
 
 ## Esta semana: confirmar com o professor
-
-O plano original foi sugerido por IA, não é exigência do professor. Confirmar:
 
 - [ ] Formato da entrega (notebook, relatório, apresentação?)
 - [ ] Tamanho esperado do texto e critérios de avaliação
 - [ ] Individual ou em grupo
-- [ ] Se DCGAN + WGAN-GP no Fashion-MNIST é aceitável
 
 Anterior: [Roteiro](02-roteiro-etapas.md) · Próximo: [Como aprender](04-como-aprender.md)

@@ -4,32 +4,35 @@ Os prazos vêm do plano em [`projeto-final-gan.md`](../../projeto-final-gan.md).
 
 ## Etapa 1: Ambiente e dados (até 04/11)
 
-- **O que você aprende:** como as imagens viram números. Cada pixel vira um valor entre -1 e 1.
+- **O que você aprende:** como uma imagem colorida vira números. Cada pixel tem 3 valores (vermelho, verde e azul), e cada um vira um número entre -1 e 1.
 - **Arquivo:** `notebooks/01_exploracao.ipynb`
-- **O que observar:** como as roupas são, se as classes estão balanceadas.
+- **O que observar:** como as pinturas e as fotos diferem em cores e textura, e o desequilíbrio entre os dois conjuntos.
 
-## Etapa 2: DCGAN (até 11/11)
+## Etapa 2: CycleGAN completa (até 11/11)
 
-- **O que você aprende:** as arquiteturas do G e do D, as losses e o laço de treino.
-- **Arquivos:** `src/models.py`, `src/train_dcgan.py`
+- **O que você aprende:** o gerador que recebe uma imagem, o discriminador que julga pedaços da imagem (PatchGAN) e as três losses: adversarial, *cycle* e *identity*.
+- **Arquivos:** `notebooks/02_cyclegan.ipynb` (você monta as peças e faz um treino curto), depois `src/train_cyclegan.py` no terminal (treino longo)
 - **O que observar:**
-  - A grade de imagens melhorando época a época (o GIF em `outputs/dcgan/evolucao.gif`).
-  - **D(x)**, a nota que o D dá às reais, e **D(G(z))**, a nota que ele dá às falsas, se aproximando de 0,5.
+  - A grade de fotos convertidas melhorando época a época (o GIF em `outputs/cyclegan/evolucao.gif`).
+  - A *cycle loss* caindo: o modelo está aprendendo a ir e voltar sem perder o conteúdo.
+  - As losses dos discriminadores: se uma delas vai a zero, aquele D venceu o jogo.
 
-## Etapa 3: WGAN-GP (até 18/11)
+## Etapa 3: Comparação e máscara do céu (até 18/11)
 
-- **O que você aprende:** por que a GAN original é instável e o que muda quando o D vira um "crítico" que dá uma pontuação em vez de uma probabilidade.
-- **Arquivo:** `src/train_wgan_gp.py`
-- **O que observar:** se as curvas ficam mais suaves e se as imagens saem melhores ou mais variadas.
+- **O que você aprende:** para que serve cada parte da loss, e como juntar dois modelos num sistema.
+- **Arquivos:** `src/train_cyclegan.py --sem-cycle`, `src/sky.py`, `src/stylize.py`
+- **O que observar:**
+  - Sem a *cycle loss*, o conteúdo da foto se mantém ou some?
+  - A máscara pega o céu certo? A emenda entre o céu pintado e o resto aparece?
 
 ## Etapa 4: Avaliação (até 25/11)
 
-- **O que você aprende:** como medir algo subjetivo como "a imagem está boa?".
-- **Arquivos:** `src/train_classifier.py`, `src/evaluate.py`, `src/plots.py`
+- **O que você aprende:** como medir algo subjetivo como "isso parece um Van Gogh?".
+- **Arquivos:** `src/evaluate.py`, `src/plots.py`
 - **O que observar:**
-  - O **FID**: quanto menor, mais parecido com o real.
-  - Um gráfico de barras com quantas imagens geradas caem em cada classe (diversidade e colapso de modo).
-  - Pares "imagem gerada x imagem de treino mais parecida" (memorização).
+  - O **FID** e o **KID**: quanto menor, mais as saídas se parecem com as pinturas reais.
+  - O erro de ida e volta: quanto do conteúdo foi preservado.
+  - Pares "saída x pintura de treino mais parecida" (memorização).
 
 ## Etapa 5: Escrita (até 02/12)
 

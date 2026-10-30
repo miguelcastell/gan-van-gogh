@@ -21,11 +21,11 @@ Corpo opcional explicando o porquê da mudança.
 | Tipo | Quando usar | Exemplo |
 |---|---|---|
 | `feat` | Funcionalidade nova (modelo, métrica, script, análise) | `feat(avaliacao): adiciona cálculo de FID` |
-| `fix` | Correção de bug | `fix(treino): corrige shape do ruído no gerador` |
-| `docs` | Só documentação (`docs/`, README, comentários) | `docs(adr): registra escolha da WGAN-GP` |
-| `exp` | Resultado de experimento (logs, métricas, figuras, registro em `docs/experimentos/`) | `exp(dcgan): treino de 40 épocas com seed 42` |
+| `fix` | Correção de bug | `fix(treino): corrige shape da máscara do céu` |
+| `docs` | Só documentação (`docs/`, README, comentários) | `docs(adr): registra escolha do segmentador de céu` |
+| `exp` | Resultado de experimento (logs, métricas, figuras, registro em `docs/experimentos/`) | `exp(cyclegan): treino de 40 épocas com seed 42` |
 | `refactor` | Muda o código sem mudar o comportamento | `refactor(utils): extrai função de salvar grade` |
-| `perf` | Melhora de desempenho | `perf(treino): carrega dataset direto na GPU` |
+| `perf` | Melhora de desempenho | `perf(dados): carrega as imagens uma vez em memória` |
 | `style` | Formatação, sem mudar a lógica | `style: padroniza aspas nos scripts` |
 | `test` | Testes ou verificações | `test(notebook): adiciona verificação do TODO 7` |
 | `chore` | Manutenção: dependências, `.gitignore`, configuração | `chore: adiciona tabulate ao requirements` |
@@ -38,8 +38,9 @@ Corpo opcional explicando o porquê da mudança.
 |---|---|
 | `modelos` | `src/models.py` |
 | `treino` | `src/train_*.py` |
-| `dcgan`, `wgan-gp` | Algo específico de um dos modelos |
-| `avaliacao` | `src/evaluate.py`, `src/train_classifier.py`, `src/plots.py` |
+| `cyclegan`, `sem-cycle` | Algo específico de um dos experimentos |
+| `ceu` | Máscara do céu e composição (`src/sky.py`, `src/stylize.py`) |
+| `avaliacao` | `src/evaluate.py`, `src/plots.py` |
 | `dados` | Carga e transformação dos dados (`src/utils.py`) |
 | `notebook` | `notebooks/` |
 | `relatorio` | `report/` |

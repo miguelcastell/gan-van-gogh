@@ -1,6 +1,6 @@
 # Projeto GAN — instruções para o Claude
 
-Projeto acadêmico de GAN (DCGAN e WGAN-GP no Fashion-MNIST). O usuário está aprendendo: explique o porquê das coisas e prefira ensinar a só entregar código.
+Projeto acadêmico de GAN: uma CycleGAN treinada no `vangogh2photo` que, junto com um segmentador de céu pré-treinado, pinta o céu de fotos reais no estilo de Van Gogh. O usuário está aprendendo: explique o porquê das coisas e prefira ensinar a só entregar código.
 
 - Plano do projeto: `projeto-final-gan.md`. Documentação: `docs/README.md`.
 - Comandos rodam da raiz com `python -m src.<script>`, dentro do venv `.venv`.

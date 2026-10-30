@@ -1,6 +1,6 @@
 # Documentação do projeto
 
-Índice de toda a documentação. O plano original do projeto está em [`../projeto-final-gan.md`](../projeto-final-gan.md).
+Índice de toda a documentação. O plano do projeto está em [`../projeto-final-gan.md`](../projeto-final-gan.md).
 
 ## Estrutura
 
@@ -18,7 +18,7 @@
 3. [Próximos passos: o que fazer agora](guia/03-proximos-passos.md)
 4. [Como aprender (e não só rodar)](guia/04-como-aprender.md)
 5. [KDD e a exploração dos dados](guia/05-kdd.md)
-6. [DCGAN x WGAN-GP: a configuração, linha por linha](guia/06-dcgan-vs-wgan-gp.md)
+6. [A CycleGAN por dentro: a configuração, linha por linha](guia/06-cyclegan-por-dentro.md)
 
 Consulta: [Glossário](guia/glossario.md), com os termos explicados ao longo do projeto.
 

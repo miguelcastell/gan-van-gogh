@@ -1,76 +1,103 @@
-# 6. DCGAN x WGAN-GP: a configuração, linha por linha
+# 6. A CycleGAN por dentro: a configuração, linha por linha
 
-## A diferença em uma frase
+## A configuração
 
-- **DCGAN:** o discriminador é um **perito** que responde "real ou falsa?". A resposta é uma probabilidade entre 0 e 1.
-- **WGAN-GP:** o discriminador vira um **crítico de arte** que dá uma **nota** de quão realista a imagem está. A nota não tem limite.
+| | Valor |
+|---|---|
+| Resolução | 128x128 |
+| Batch | 1 |
+| Gerador | ResNet, 6 blocos residuais, InstanceNorm |
+| Discriminador | PatchGAN 70x70 |
+| Loss adversarial | LSGAN |
+| λ_cycle / λ_identity | 10 / 5 |
+| Otimizador | Adam, lr 2e-4, betas (0.5, 0.999), lr caindo linearmente na 2ª metade |
+| Image pool | 50 |
 
-Por que isso importa: quando o perito da DCGAN fica muito bom, ele responde "falsa, com 100% de certeza" para tudo o que o gerador faz. O gerador não recebe nenhuma pista de *como* melhorar e para de aprender. O crítico da WGAN-GP sempre dá uma nota, mesmo para imagens ruins ("está ruim, mas menos ruim que antes"), então o gerador sempre tem uma direção para seguir.
+Quase tudo vem do artigo da CycleGAN. A única mudança é a resolução, reduzida para caber na GPU e no prazo.
 
-## A tabela, linha por linha
+## As três losses
 
-| | DCGAN | WGAN-GP |
-|---|---|---|
-| Batch | 128 | 128 |
-| Ruído *z* | 100 dimensões | 100 dimensões |
-| Otimizador | Adam, lr 2e-4, betas (0.5, 0.999) | Adam, lr 1e-4, betas (0.0, 0.9) |
-| Específico | BCE, *label smoothing* opcional | n_critic 5, λ_gp 10, crítico sem BatchNorm |
+O gerador G (foto → pintura) é treinado para minimizar uma soma de três erros:
 
-### Batch: 128 (igual nos dois)
+```
+loss_G = adversarial  +  10 × cycle  +  5 × identity
+```
 
-Quantas imagens o modelo vê de uma vez antes de ajustar os pesos. É como corrigir 128 provas e só então decidir o que mudar na aula, em vez de mudar a cada prova.
+### Adversarial: "pareça um Van Gogh"
 
-- Batch maior dá uma estimativa mais estável do erro, mas usa mais memória da GPU.
-- Os dois modelos usam o mesmo valor para que a comparação seja justa.
+O D_pintura dá uma nota para a saída do G. O G é punido quando a nota diz "falsa". Sozinha, essa loss produz pinturas convincentes, mas sem compromisso com a foto de entrada.
 
-### Ruído z: 100 dimensões (igual nos dois)
+### Cycle: "não perca o conteúdo"
 
-O ponto de partida de cada imagem: uma lista de 100 números sorteados. É a "semente" da imagem.
+A foto vira pintura e a pintura volta a ser foto: `F(G(foto))`. A *cycle loss* é a diferença, pixel a pixel, entre essa foto reconstruída e a original. Também vale no sentido contrário: `G(F(pintura))` deve voltar à pintura.
 
-- Cada *z* diferente gera uma imagem diferente. O gerador aprende a transformar esses números em roupas.
-- Se você mudar um pouco o *z*, a imagem muda um pouco. Por isso as grades por época usam sempre o mesmo *z* (`fixed_z`): assim dá para ver a *mesma* imagem evoluindo.
+- O **10** (λ_cycle) é o peso. Ele diz que preservar o conteúdo vale 10 vezes mais que enganar o discriminador.
+- Com λ_cycle = 0 (a comparação do projeto), sobra só a adversarial, e nada impede o G de ignorar a foto.
 
-### Otimizador: Adam
+### Identity: "não mexa no que já está certo"
 
-O otimizador é o algoritmo que ajusta os pesos da rede a cada passo. O Adam tem dois tipos de parâmetro:
+Se o G recebe algo que **já é** uma pintura de Van Gogh, ele deveria devolvê-la quase igual: `G(pintura) ≈ pintura`. Sem essa regra, o G tende a mudar as cores da imagem toda, por exemplo deixando um céu azul alaranjado.
 
-- **lr (*learning rate*, taxa de aprendizado):** o tamanho de cada passo. Muito grande, o modelo "pula" a solução e o treino explode. Muito pequeno, o treino demora demais.
-- **betas:** o quanto o otimizador lembra dos passos anteriores (o "embalo", ou *momentum*). `beta1` alto significa que ele continua na direção em que vinha. `beta1` baixo significa que ele reage mais ao passo atual.
+- O **5** (λ_identity) é metade de λ_cycle, como no artigo.
 
-Por que os valores diferem:
+## As peças da arquitetura
 
-- **DCGAN (lr 2e-4, beta1 0.5):** é a receita do artigo original da DCGAN. O padrão do Adam é `beta1 = 0.9`, mas numa GAN o "alvo" muda o tempo todo (o oponente também aprende), então lembrar demais do passado atrapalha. Por isso o embalo é reduzido para 0.5.
-- **WGAN-GP (lr 1e-4, beta1 0.0):** é a receita do artigo da WGAN-GP. Aqui o embalo é zerado, e o passo é menor, porque o crítico é treinado 5 vezes mais (veja `n_critic`).
+### Gerador ResNet com 6 blocos
 
-`2e-4` é notação científica: 2 x 10⁻⁴ = 0,0002.
+O gerador tem três partes:
 
-### Específico da DCGAN
+1. **Codificador:** reduz a imagem de 128x128 para 32x32, mas com muito mais canais. É o "resumo" do que tem na foto.
+2. **6 blocos residuais:** transformam o resumo. Cada bloco calcula uma **correção** e soma ao que entrou (`saída = entrada + correção`). Isso facilita manter a foto e mudar só o estilo, porque "não mudar nada" é fácil de aprender: basta a correção ser zero.
+3. **Decodificador:** volta para 128x128 com 3 canais e termina com `tanh`, que produz valores entre -1 e 1, a mesma faixa das imagens reais.
 
-- **BCE (*Binary Cross-Entropy*):** a função de erro para perguntas de sim ou não. Ela pune o discriminador quando ele erra, e pune mais quando ele erra com muita certeza.
-- ***Label smoothing* (opcional):** em vez de dizer ao discriminador que as imagens reais são "100% reais" (rótulo 1), dizemos "90% reais" (rótulo 0.9). Isso impede o perito de ficar confiante demais, e o gerador continua recebendo um sinal útil. No código: `--label-smoothing 0.1`.
+O artigo usa 9 blocos para 256x256 e 6 para 128x128.
 
-### Específico da WGAN-GP
+### Discriminador PatchGAN
 
-- **Distância de Wasserstein:** a ideia por trás da nota do crítico. Imagine as imagens reais como um monte de terra e as imagens geradas como outro. A distância de Wasserstein mede quanto trabalho seria preciso para mover um monte até ficar no formato do outro. Mesmo quando o gerador está muito ruim, essa distância diz "falta tanto". A pergunta "real ou falsa?" só diria "falsa".
-- **n_critic = 5:** o crítico treina 5 vezes para cada vez que o gerador treina. A nota só é útil se o crítico for bom, então ele precisa estar sempre "à frente".
-- **λ_gp = 10 (*gradient penalty*, penalidade de gradiente):** sem limite, o crítico poderia inflar as notas indefinidamente e o treino perderia o sentido. A penalidade obriga o crítico a ser "suave": imagens parecidas precisam receber notas parecidas. O 10 é o peso dessa regra na função de erro (valor do artigo).
-- **Crítico sem BatchNorm:** o BatchNorm normaliza as imagens *em conjunto*, então a nota de uma imagem passaria a depender das outras do mesmo batch. A penalidade de gradiente é calculada *imagem por imagem*, e as duas coisas não combinam. Por isso o crítico não usa BatchNorm (veja `Critic` em `src/models.py`).
+Em vez de uma nota para a imagem inteira, o PatchGAN devolve uma **grade de notas**. Cada nota julga um pedaço da imagem de cerca de 70x70 pixels: "este pedaço parece pincelada de Van Gogh?".
+
+É exatamente o que interessa aqui: o estilo de um pintor está na **textura local**, nas pinceladas. A composição geral da cena vem da foto, que é preservada pela *cycle loss*.
+
+### InstanceNorm em vez de BatchNorm
+
+Normalizar é ajustar os números de uma camada para ficarem numa faixa estável. O BatchNorm faz isso usando **todas as imagens do batch juntas**. Com batch 1, isso não faz sentido. O InstanceNorm normaliza **cada imagem sozinha**, e ainda remove o contraste e a iluminação específicos daquela foto, o que ajuda a transferir estilo.
+
+## O treino
+
+### Batch 1
+
+Uma imagem por passo. É a receita do artigo, e combina com o InstanceNorm. O treino fica mais "barulhento", mas cada passo é barato.
+
+### LSGAN: erro quadrático em vez de BCE
+
+A GAN original usa a BCE (*Binary Cross-Entropy*), que mede o quanto o perito acerta "real ou falsa". A LSGAN usa o **erro quadrático**: o D tenta dar nota 1 para as reais e 0 para as falsas, e o erro é a distância ao quadrado até esse alvo.
+
+A vantagem: com a BCE, quando o D fica muito confiante, o sinal para o G praticamente some. Com o erro quadrático, uma imagem muito longe do alvo continua gerando um sinal forte, e o treino fica mais estável.
+
+### Adam: lr 2e-4, betas (0.5, 0.999)
+
+- **lr (*learning rate*):** o tamanho de cada passo de ajuste. `2e-4` = 0,0002.
+- **beta1 = 0.5:** o quanto o otimizador "lembra" da direção anterior. O padrão do Adam é 0.9, mas numa GAN o alvo muda o tempo todo (o oponente também aprende), então lembrar demais atrapalha.
+- **lr caindo na 2ª metade:** nas primeiras épocas o lr é fixo, e depois cai em linha reta até zero. Passos grandes no começo para aprender rápido, e passos cada vez menores no fim para refinar sem bagunçar o que já foi aprendido.
+
+### Image pool de 50
+
+O D_pintura não vê só a saída mais recente do G. Ele vê uma mistura com 50 saídas antigas guardadas. Sem isso, o D só reage à última "moda" do G, e os dois ficam se perseguindo em círculos. Com o histórico, o D tem uma visão mais estável do que o G produz.
 
 ## O que esperar ao comparar
 
-| | DCGAN | WGAN-GP |
+| | Completa | Sem *cycle loss* |
 |---|---|---|
-| Velocidade | Mais rápida (1 passo do D por passo do G) | Mais lenta (5 passos do crítico por passo do G, mais o cálculo da penalidade) |
-| Curvas de loss | Oscilam e não dizem muito sobre a qualidade | A estimativa de Wasserstein tende a cair conforme as imagens melhoram |
-| Risco de colapso de modo | Maior | Menor, em geral |
-| Qualidade final | Em bases simples, pode ser parecida | Ganho principal é a estabilidade, não necessariamente a nitidez |
+| Estilo | Pinceladas de Van Gogh | Pode ficar até "mais Van Gogh" |
+| Conteúdo da foto | Preservado | Tende a se perder: formas trocadas ou a mesma textura em toda foto |
+| Erro de ida e volta | Baixo | Alto |
+| FID/KID | — | Pode até ser melhor, porque o FID mede o estilo e não o conteúdo |
 
-Essas são as expectativas da literatura. O seu experimento vai confirmar ou não, e qualquer resultado é bom material para o relatório.
+A última linha é um bom ponto para o relatório: uma métrica pode melhorar enquanto o resultado piora para o que o usuário quer. Essas são expectativas da literatura, e o seu experimento vai confirmar ou não.
 
-## Onde está no código
+## Onde vai estar no código
 
-- DCGAN: `src/train_dcgan.py`. Procure `bce`, `real_label` e `opt_d`.
-- WGAN-GP: `src/train_wgan_gp.py`. Procure `gradient_penalty`, `n_critic` e `loss_c`.
-- Arquiteturas: `src/models.py` (`Discriminator` e `Critic`).
+- Arquiteturas: `src/models.py` (gerador ResNet e discriminador PatchGAN).
+- Treino e losses: `src/train_cyclegan.py`. Procure `lambda_cycle`, `lambda_identity` e `pool`.
 
 Anterior: [KDD e a exploração dos dados](05-kdd.md)

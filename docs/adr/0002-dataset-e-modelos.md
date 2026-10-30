@@ -38,6 +38,6 @@ O enunciado pede uma GAN, uma comparação e avaliação de realismo, diversidad
 
 ## Em aberto
 
-- [ ] Número de épocas e tamanho do subconjunto de fotos (depende do tempo medido no primeiro treino).
-- [ ] Qual segmentador de céu usar. Ele precisa ter a classe "céu": modelos treinados no ADE20K têm; os do PASCAL VOC, como o DeepLab do torchvision, não. **Proposta:** SegFormer-B0 no ADE20K (`src/sky.py`), pequeno e rápido. Falta confirmar olhando as máscaras em fotos reais.
-- [ ] Como medir diversidade sem classes.
+- [ ] Número de épocas e tamanho do subconjunto de fotos. **Evidência do [primeiro treino](../experimentos/2026-10-29-primeiro-treino.md):** com 2.000 fotos por época, o FID parou de melhorar por volta da época 25 (124,2), e 40 épocas levaram ~2h50.
+- [ ] Qual segmentador de céu usar. Ele precisa ter a classe "céu": modelos treinados no ADE20K têm; os do PASCAL VOC, como o DeepLab do torchvision, não. **Proposta:** SegFormer-B0 no ADE20K (`src/sky.py`), pequeno e rápido. Nas 3 fotos de teste do primeiro treino, recortou bem o céu (inclusive em volta da torre do templo). Falta confirmar em fotos próprias.
+- [ ] Como medir diversidade sem classes. **Proposta, já implementada em `src/evaluate.py`:** a distância L2 média entre todos os pares de saídas, comparada com a das pinturas reais. No primeiro treino, ela detectou o colapso (57 contra 138), que as losses não mostravam.

@@ -7,7 +7,7 @@ Todos os valores usados pelo código, com a origem de cada um. Conferidos no có
 | Parâmetro | Opção | Padrão | Origem / motivo |
 |---|---|---|---|
 | Épocas | `--epochs` | 40 | Escolha nossa, pelo prazo. O artigo usa 200 |
-| Início da queda do lr | `--decay-start` | metade das épocas (20) | Artigo: lr constante na 1ª metade, queda linear até ~0 na 2ª |
+| Início da queda do lr | `--decay-start` | metade das épocas (20) | Artigo: lr constante na 1ª metade, queda linear na 2ª. Com 40 épocas: lr = 2e-4 nas épocas 1 a 21, depois cai 5% do valor inicial por época até 1e-5 na época 40 (`lr_factor` em `src/train_cyclegan.py`; conferido no `logs.csv` do [primeiro treino](../experimentos/2026-10-29-primeiro-treino.md)) |
 | Fotos por época | `--photos` | todas (6.287) | Escolha nossa. Subconjunto sorteado com a seed |
 | Resolução | `--size` | 128 | Escolha nossa, pelo tempo. O artigo usa 256 |
 | Batch | `--batch-size` | 1 | Artigo |

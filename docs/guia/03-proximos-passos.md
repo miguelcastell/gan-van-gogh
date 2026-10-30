@@ -32,17 +32,19 @@ Antes, leia o [guia 06 (a CycleGAN por dentro)](06-cyclegan-por-dentro.md).
 - [ ] Rodar o treino curto (300 passos) com e sem *cycle loss*, **escrevendo a previsão antes**
 - [ ] Registrar as previsões e o que observou em [`experimentos/`](../experimentos/)
 
-## Depois: o treino longo, no terminal
+## Feito: o primeiro treino longo (2026-10-29)
 
-O treino longo roda no terminal, não no notebook ([ADR 0006](../adr/0006-notebooks-e-scripts.md)).
+Rodou durante a noite: a CycleGAN completa e a versão sem *cycle loss*, 40 épocas de 2.000 fotos cada (~2h50 por treino), mais a avaliação. Tudo está no [registro do experimento](../experimentos/2026-10-29-primeiro-treino.md).
 
-```powershell
-python -m src.train_cyclegan --epochs 1 --photos 300
-```
+- [x] Tempo por passo com o dataset real: ~126 ms (4,2 min por época)
+- [x] Treino completo e treino `--sem-cycle`
+- [x] Avaliação e gráficos (`report/figuras/`, `report/tabela_comparativa.md`)
 
-- [ ] Conferir o tempo por passo com o dataset real. Com imagens falsas deu ~130 ms ([experimento](../experimentos/2026-10-29-tempo-por-passo.md))
-- [ ] Decidir o número de épocas e de fotos ([ADR 0002](../adr/0002-dataset-e-modelos.md), seção "Em aberto")
-- [ ] Rodar o treino completo e a versão `--sem-cycle`
+## Depois: entender o primeiro treino (notebook 03)
+
+- [ ] Ler `notebooks/03_analise_primeiro_treino.ipynb` (de preferência depois dos notebooks 01 e 02) e responder às perguntas ✍️
+- [ ] Testar o céu de Van Gogh numa foto sua: `python -m src.stylize sua_foto.jpg`
+- [ ] Escolher a próxima mudança a testar (seção 11 do notebook 03) e **escrever a previsão** antes de treinar
 
 ## Esta semana: confirmar com o professor
 

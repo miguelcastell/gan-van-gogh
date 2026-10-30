@@ -1,0 +1,7 @@
+Checkpoint: C:\Users\Miguel\Desktop\codiguin\gan\outputs\cyclegan_sem_cycle\checkpoints\epoch_040.pt
+C:\Users\Miguel\Desktop\codiguin\gan\.venv\Lib\site-packages\torchmetrics\utilities\prints.py:43: UserWarning: Metric `Kernel Inception Distance` will save all extracted features in buffer. For large datasets this may lead to large memory footprint.
+  warnings.warn(*args, **kwargs)
+FID 220.9 (fotos sem conversão: 179.8) | KID 0.1896 ± 0.0149
+Erro de ida e volta (L1) 0.494 | mudança foto -> pintura 0.489
+Dist. vizinho mais próximo: saídas 90.7 | entre pinturas reais 93.2
+Métricas salvas em C:\Users\Miguel\Desktop\codiguin\gan\outputs\cyclegan_sem_cycle\metrics.json; figuras em C:\Users\Miguel\Desktop\codiguin\gan\report\figuras

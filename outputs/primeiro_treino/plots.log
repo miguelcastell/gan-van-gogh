@@ -1,0 +1,5 @@
+| modelo             |   λ_cycle |   FID |   FID fotos originais | KID             |   erro ida e volta |   dist. NN saída |   dist. NN ref. |
+|:-------------------|----------:|------:|----------------------:|:----------------|-------------------:|-----------------:|----------------:|
+| cyclegan           |        10 | 125.3 |                 179.8 | 0.0514 ± 0.0054 |              0.13  |             93.1 |            93.2 |
+| cyclegan_sem_cycle |         0 | 220.9 |                 179.8 | 0.1896 ± 0.0149 |              0.494 |             90.7 |            93.2 |
+Figuras em C:\Users\Miguel\Desktop\codiguin\gan\report\figuras

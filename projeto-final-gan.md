@@ -138,30 +138,31 @@ gan-van-gogh/
 ## 6. Plano de execução
 
 ### Etapa 1: Ambiente e dados (até 04/11)
-- [ ] PyTorch com CUDA funcionando.
+- [x] PyTorch com CUDA funcionando.
 - [x] Baixar o `vangogh2photo`.
 - [ ] Explorar os dados no notebook 01.
 - [ ] Montar o gerador, o discriminador e as losses no notebook 02 (o gabarito está em `src/`).
-- [ ] Primeiro treino curto, para medir o tempo de uma época.
+- [x] Primeiro treino curto, para medir o tempo de uma época (~4,2 min com 2.000 fotos; ver o [experimento](docs/experimentos/2026-10-29-tempo-por-passo.md)).
 
 ### Etapa 2: CycleGAN completa (até 11/11)
-- [ ] Treino completo com as mesmas fotos de teste gerando uma grade por época.
-- [ ] Registrar as losses (adversarial, cycle e identity) de cada gerador e discriminador.
-- [ ] Montar GIF da evolução.
-- [ ] Salvar checkpoints.
+Resultado do 1º treino (2026-10-29): [registro do experimento](docs/experimentos/2026-10-29-primeiro-treino.md) e [notebook 03](notebooks/03_analise_primeiro_treino.ipynb). A avaliação já tem uma 1ª versão completa (Etapa 4); falta repetir com o modelo final.
+- [x] Treino completo com as mesmas fotos de teste gerando uma grade por época.
+- [x] Registrar as losses (adversarial, cycle e identity) de cada gerador e discriminador.
+- [x] Montar GIF da evolução.
+- [x] Salvar checkpoints.
 
 ### Etapa 3: Comparação e máscara do céu (até 18/11)
-- [ ] Treinar a versão sem *cycle loss* com o mesmo orçamento de épocas.
-- [ ] Comparar curvas e resultados lado a lado.
-- [ ] Integrar o segmentador de céu e a composição com borda suavizada.
+- [x] Treinar a versão sem *cycle loss* com o mesmo orçamento de épocas.
+- [x] Comparar curvas e resultados lado a lado.
+- [x] Integrar o segmentador de céu e a composição com borda suavizada.
 - [ ] Testar com fotos próprias (a estátua).
 
 ### Etapa 4: Avaliação (até 25/11)
-- [ ] **Realismo do estilo:** FID e KID entre as fotos convertidas e as pinturas reais.
-- [ ] **Preservação do conteúdo:** quanto a foto muda ao ir e voltar (foto → pintura → foto).
-- [ ] **Memorização:** para cada saída, achar a pintura mais parecida e mostrar os pares. Referência: a distância entre pinturas reais diferentes (não há pinturas de teste separadas: `testA` = `trainA`).
-- [ ] **Exemplos ruins:** máscaras erradas, artefatos, céus que viraram outra coisa.
-- [ ] Tabela comparativa: completa x sem *cycle loss*.
+- [x] **Realismo do estilo:** FID e KID entre as fotos convertidas e as pinturas reais.
+- [x] **Preservação do conteúdo:** quanto a foto muda ao ir e voltar (foto → pintura → foto).
+- [x] **Memorização:** para cada saída, achar a pintura mais parecida e mostrar os pares. Referência: a distância entre pinturas reais diferentes (não há pinturas de teste separadas: `testA` = `trainA`).
+- [x] **Exemplos ruins:** máscaras erradas, artefatos, céus que viraram outra coisa.
+- [x] Tabela comparativa: completa x sem *cycle loss*.
 
 ### Etapa 5: Análise ética e fechamento (até 02/12)
 - [ ] Escrever a análise ética ligando cada ponto ao que foi observado nos experimentos.

@@ -1,0 +1,36 @@
+{
+  "inicio": "2026-10-29T22:21:08",
+  "passos": [
+    {
+      "passo": "treino_completo",
+      "inicio": "2026-10-29T22:21:08",
+      "minutos": 173.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "treino_sem_cycle",
+      "inicio": "2026-10-30T01:14:08",
+      "minutos": 168.3,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_completo",
+      "inicio": "2026-10-30T04:02:25",
+      "minutos": 0.6,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_sem_cycle",
+      "inicio": "2026-10-30T04:03:02",
+      "minutos": 0.6,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "plots",
+      "inicio": "2026-10-30T04:03:36",
+      "minutos": 0.1,
+      "codigo_saida": 0
+    }
+  ],
+  "fim": "2026-10-30T04:03:40"
+}

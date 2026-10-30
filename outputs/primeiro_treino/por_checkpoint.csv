@@ -1,0 +1,17 @@
+modelo,epoca,fid,kid,diversidade,cycle_l1
+cyclegan,5,168.2,0.0865,130.5,0.168
+cyclegan,10,137.8,0.0534,122.0,0.175
+cyclegan,15,144.5,0.0652,131.3,0.161
+cyclegan,20,136.9,0.0556,137.8,0.141
+cyclegan,25,124.2,0.0458,131.6,0.143
+cyclegan,30,130.9,0.0566,130.4,0.133
+cyclegan,35,128.2,0.0544,128.5,0.130
+cyclegan,40,125.3,0.0521,128.9,0.130
+cyclegan_sem_cycle,5,166.8,0.0903,128.4,0.214
+cyclegan_sem_cycle,10,151.1,0.0861,118.1,0.404
+cyclegan_sem_cycle,15,140.5,0.0665,124.6,0.271
+cyclegan_sem_cycle,20,172.7,0.1200,117.2,0.288
+cyclegan_sem_cycle,25,154.9,0.1025,99.3,0.500
+cyclegan_sem_cycle,30,177.9,0.1306,88.1,0.421
+cyclegan_sem_cycle,35,230.4,0.2247,56.0,0.670
+cyclegan_sem_cycle,40,220.9,0.1908,56.9,0.494

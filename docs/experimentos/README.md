@@ -4,7 +4,7 @@ Um arquivo por experimento (treino, teste de hiperparâmetro, avaliação). Essa
 
 ## Como criar
 
-1. Copie [`template.md`](template.md) para `AAAA-MM-DD-nome-curto.md` (ex.: `2026-10-30-dcgan-3-epocas.md`).
+1. Copie [`template.md`](template.md) para `AAAA-MM-DD-nome-curto.md` (ex.: `2026-10-30-cyclegan-1-epoca.md`).
 2. Preencha a **previsão antes de rodar**. É o que transforma rodar código em aprender.
 3. Adicione na tabela abaixo.
 
@@ -12,4 +12,4 @@ Um arquivo por experimento (treino, teste de hiperparâmetro, avaliação). Essa
 
 | Data | Experimento | Pasta em `outputs/` | Conclusão em uma frase |
 |---|---|---|---|
-| | | | |
+| 2026-10-29 | [Tempo por passo de treino](2026-10-29-tempo-por-passo.md) | — | ~130 ms por passo: 40 épocas com 2.000 fotos levam cerca de 3 horas |

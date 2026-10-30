@@ -14,3 +14,6 @@ venv/
 
 # Configuração local do Claude Code
 .claude/
+
+# Anotações temporárias
+perguntas-pendentes.md

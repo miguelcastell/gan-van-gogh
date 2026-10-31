@@ -1,0 +1,24 @@
+Dispositivo: cuda | saída: C:\Users\Miguel\Desktop\codiguin\gan\outputs\cyclegan_crop
+λ_cycle 10.0 | λ_identity 5.0
+Pinturas: 400 | fotos: 2000 | passos por época: 2000
+  ~871 ms por passo | estimativa: 29.0 min por época
+Época   1/40 | G_adv 0.374 | cycle 0.730 | D_pintura 0.182 | 7.2 min
+Época   2/40 | G_adv 0.088 | cycle 0.466 | D_pintura 0.122 | 4.3 min
+Época   3/40 | G_adv 0.795 | cycle 0.448 | D_pintura 0.142 | 4.3 min
+Época   4/40 | G_adv 0.262 | cycle 0.435 | D_pintura 0.235 | 4.4 min
+Época   5/40 | G_adv 0.659 | cycle 0.395 | D_pintura 0.141 | 4.7 min
+Época   6/40 | G_adv 0.738 | cycle 0.372 | D_pintura 0.279 | 4.3 min
+Época   7/40 | G_adv 1.455 | cycle 0.323 | D_pintura 0.319 | 4.3 min
+Época   8/40 | G_adv 0.876 | cycle 0.333 | D_pintura 0.106 | 4.3 min
+Época   9/40 | G_adv 0.434 | cycle 0.226 | D_pintura 0.092 | 4.3 min
+Época  10/40 | G_adv 0.259 | cycle 0.359 | D_pintura 0.291 | 4.3 min
+Época  11/40 | G_adv 0.328 | cycle 0.520 | D_pintura 0.120 | 4.3 min
+Época  12/40 | G_adv 0.180 | cycle 0.400 | D_pintura 0.287 | 4.3 min
+Época  13/40 | G_adv 0.037 | cycle 0.371 | D_pintura 0.200 | 4.3 min
+Época  14/40 | G_adv 0.749 | cycle 0.289 | D_pintura 0.056 | 4.3 min
+Época  15/40 | G_adv 0.719 | cycle 0.314 | D_pintura 0.175 | 4.3 min
+Época  16/40 | G_adv 0.736 | cycle 0.257 | D_pintura 0.069 | 5.5 min
+Época  17/40 | G_adv 0.238 | cycle 0.257 | D_pintura 0.156 | 4.3 min
+Época  18/40 | G_adv 0.252 | cycle 0.196 | D_pintura 0.177 | 4.6 min
+Época  19/40 | G_adv 0.763 | cycle 0.294 | D_pintura 0.165 | 4.6 min
+Época  20/40 | G_adv 0.435 | cycle 0.265 | D_pintura 0.145 | 4.4 min

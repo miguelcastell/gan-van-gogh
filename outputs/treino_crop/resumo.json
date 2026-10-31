@@ -1,0 +1,24 @@
+{
+  "inicio": "2026-10-30T20:02:36",
+  "passos": [
+    {
+      "passo": "treino_crop",
+      "inicio": "2026-10-30T20:02:36",
+      "minutos": 92.0,
+      "codigo_saida": 1
+    },
+    {
+      "passo": "avaliacao_crop",
+      "inicio": "2026-10-30T21:34:35",
+      "minutos": 0.7,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "plots",
+      "inicio": "2026-10-30T21:35:19",
+      "minutos": 0.1,
+      "codigo_saida": 0
+    }
+  ],
+  "fim": "2026-10-30T21:35:24"
+}

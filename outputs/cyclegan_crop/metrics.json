@@ -1,0 +1,19 @@
+{
+  "model": "cyclegan_crop",
+  "checkpoint": "epoch_020.pt",
+  "lambda_cycle": 10.0,
+  "n_fotos": 751,
+  "n_pinturas": 400,
+  "fid": 125.98961639404297,
+  "kid": 0.04208971560001373,
+  "kid_std": 0.004756652284413576,
+  "fid_fotos_originais": 179.77902221679688,
+  "kid_fotos_originais": 0.0999230146408081,
+  "diversidade": 135.3480239680426,
+  "diversidade_pinturas": 137.71961152882204,
+  "cycle_l1": 0.14693041145801544,
+  "mudanca_l1": 0.2305176854133606,
+  "nn_dist_fake_mean": 96.01229095458984,
+  "nn_dist_ref_mean": 93.22859191894531,
+  "nn_dist_fake_min": 63.48897171020508
+}

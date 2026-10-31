@@ -1,0 +1,6 @@
+| modelo             |   λ_cycle |   FID |   FID fotos originais | KID             |   diversidade |   diversidade pinturas |   erro ida e volta |   dist. NN saída |   dist. NN ref. |
+|:-------------------|----------:|------:|----------------------:|:----------------|--------------:|-----------------------:|-------------------:|-----------------:|----------------:|
+| cyclegan           |        10 | 125.3 |                 179.8 | 0.0514 ± 0.0054 |         128.9 |                  137.7 |              0.13  |             93.1 |            93.2 |
+| cyclegan_crop      |        10 | 126   |                 179.8 | 0.0421 ± 0.0048 |         135.3 |                  137.7 |              0.147 |             96   |            93.2 |
+| cyclegan_sem_cycle |         0 | 220.9 |                 179.8 | 0.1896 ± 0.0149 |          56.9 |                  137.7 |              0.494 |             90.7 |            93.2 |
+Figuras em C:\Users\Miguel\Desktop\codiguin\gan\report\figuras

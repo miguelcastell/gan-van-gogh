@@ -1,14 +1,19 @@
 # Experimento: recorte aleatório no aumento de dados
 
-- **Data:** 2026-10-30 (início às 20h04)
-- **Commit do código:** `3e5f8a2`
+- **Data:** 2026-10-30 (épocas 1 a 20, início às 20h04) e 2026-10-31 (épocas 21 a 40, início às 13h15)
+- **Commit do código:** `3e5f8a2` (o código do treino não mudou na retomada)
 - **Comandos:**
   ```powershell
+  # 1ª parte (interrompida de propósito depois da época 20)
   python -m src.train_cyclegan --epochs 40 --photos 2000 --load-size 143 --out cyclegan_crop
+  # 2ª parte (retomada)
+  python -m src.train_cyclegan --epochs 40 --photos 2000 --load-size 143 --out cyclegan_crop --resume outputs/cyclegan_crop/checkpoints/epoch_020.pt
   python -m src.evaluate --model cyclegan_crop
   python -m src.plots
+  # métricas de cada checkpoint (epoch_005.pt ... epoch_040.pt), terminando no 040
+  python -m src.evaluate --model cyclegan_crop --checkpoint epoch_0XX.pt
   ```
-- **Pasta de saída:** `outputs/cyclegan_crop/`. Logs brutos em `outputs/treino_crop/`.
+- **Pasta de saída:** `outputs/cyclegan_crop/`. Logs brutos em `outputs/treino_crop/`: os arquivos sem sufixo são da 1ª parte, os `*_retomada` da 2ª. Métricas por checkpoint em [`por_checkpoint.csv`](../../outputs/treino_crop/por_checkpoint.csv).
 
 ## Pergunta
 
@@ -55,6 +60,9 @@ Com o recorte, cada pintura pode chegar de 16 × 16 × 2 = 512 jeitos, contra 2 
 | 20:27 | Época 5 (1º checkpoint). A partir da época 2, **4,3 min por época**, o mesmo ritmo do primeiro treino: o recorte não deixou o treino mais lento |
 | 21:13 | Época 15. Média do D_pintura por época: 0,176 (época 5), 0,211 (10) e 0,213 (15), contra 0,186, 0,151 e 0,120 no primeiro treino. **No primeiro treino ele caía sem parar; com o recorte, estabilizou perto de 0,21**, mais perto do 0,25 de quem chuta |
 | 21:34 | Época 20 (4º checkpoint). **Treino interrompido de propósito**, a pedido do autor, logo depois de salvar o `epoch_020.pt`. A avaliação e os gráficos rodaram em seguida, sobre esse checkpoint |
+| 31/10 13:15 | **Retomada** a partir do `epoch_020.pt`, com as mesmas opções (`--load-size 143` incluso). O log confirma "Continuando da época 21" |
+| 31/10 14:53 | Época 40. 20 épocas em 98,2 min: 4,4 a 4,7 min por época até a época 30 e 5,0 a 5,3 min da 31 em diante. O `gpu_retomada.csv` não mostra limite de energia nem queda de clock nesse trecho (~1.900 MHz, ~65 W, 70–72 °C). **A causa da lentidão não foi identificada** |
+| 31/10 14:54 | Avaliação e gráficos sobre o `epoch_040.pt` (~1 min, [`resumo_retomada.json`](../../outputs/treino_crop/resumo_retomada.json)), todos com código de saída 0 |
 
 ## Resultado (parcial: época 20 de 40)
 
@@ -94,14 +102,62 @@ Com o recorte, cada pintura pode chegar de 16 × 16 × 2 = 512 jeitos, contra 2 
 
 **Sobre a previsão do autor ("vai ficar melhor"):** até aqui, confirmada na comparação justa (mesma época). Contra os critérios escritos, que comparam com a época 40 do primeiro treino: KID abaixo de 0,051 ✓, D_pintura acima de 0,03 ✓, diversidade perto de 137,7 ✓, FID abaixo de 125,3 ainda não (126,0, praticamente empatado). A conclusão final depende das épocas 21 a 40.
 
+## Resultado final (época 40)
+
+**Tempo total:** 40 épocas em 190 min (92 + 98,2), contra ~170 min do primeiro treino.
+
+**Métricas** (751 fotos de teste, contra as 400 pinturas; [`metrics.json`](../../outputs/cyclegan_crop/metrics.json)):
+
+| | Com recorte, época 40 | 1º treino, época 40 | Referência |
+|---|---|---|---|
+| FID ↓ | **117,4** | 125,3 | 179,8 (fotos sem conversão) |
+| KID ↓ | **0,036 ± 0,004** | 0,051 ± 0,005 | 0,100 (fotos sem conversão) |
+| Diversidade | 130,8 | 128,9 | 137,7 (pinturas reais) |
+| Erro de ida e volta (`cycle_l1`) ↓ | **0,126** | 0,130 | — |
+| Mudança foto → pintura (`mudanca_l1`) | 0,260 | 0,295 | — |
+| Distância à pintura mais próxima (média / mínima) | 93,1 / 57,6 | 93,1 / 58,2 | 93,2 (entre pinturas reais) |
+
+**Métricas por checkpoint** ([`por_checkpoint.csv`](../../outputs/treino_crop/por_checkpoint.csv); o 1º treino vem de [`primeiro_treino/por_checkpoint.csv`](../../outputs/primeiro_treino/por_checkpoint.csv)). A avaliação é determinística: reavaliar as épocas 20 e 40 deu exatamente os mesmos números de antes.
+
+| Época | FID com recorte | FID 1º treino | KID com recorte | KID 1º treino |
+|---|---|---|---|---|
+| 5 | 178,0 | 168,2 | 0,103 | 0,087 |
+| 10 | 153,6 | 137,8 | 0,077 | 0,053 |
+| 15 | 141,7 | 144,5 | 0,058 | 0,065 |
+| 20 | 126,0 | 136,9 | 0,042 | 0,056 |
+| 25 | 120,4 | 124,2 | 0,037 | 0,046 |
+| 30 | 122,4 | 130,9 | 0,038 | 0,057 |
+| 35 | 122,1 | 128,2 | 0,040 | 0,054 |
+| 40 | **117,4** | 125,3 | **0,036** | 0,052 |
+
+**Losses, média por época** (calculadas de [`logs.csv`](../../outputs/cyclegan_crop/logs.csv)):
+
+| Época | D_pintura com recorte | D_pintura 1º treino | G_adv com recorte | G_adv 1º treino |
+|---|---|---|---|---|
+| 20 | 0,167 | 0,103 | 0,456 | 0,535 |
+| 25 | 0,139 | 0,093 | 0,599 | 0,613 |
+| 30 | 0,149 | 0,073 | 0,463 | 0,709 |
+| 35 | 0,120 | 0,046 | 0,563 | 0,789 |
+| 40 | 0,097 | 0,030 | 0,630 | 0,913 |
+
+**Figuras:** [grade da época 40](../../outputs/cyclegan_crop/samples/epoch_040.png) (compare com a [do 1º treino](../../outputs/cyclegan/samples/epoch_040.png)), [curvas](../../report/figuras/cyclegan_crop_curvas.png), [amostras](../../report/figuras/cyclegan_crop_amostras.png), [piores casos](../../report/figuras/cyclegan_crop_piores.png), [vizinhos](../../report/figuras/cyclegan_crop_vizinhos.png), [memorização](../../report/figuras/cyclegan_crop_memorizacao.png). A [tabela comparativa](../../report/tabela_comparativa.md) já traz a época 40.
+
+## O que observei (época 40)
+
+1. **É o melhor modelo do projeto.** FID 117,4 e KID 0,036, contra 125,3 e 0,051 do primeiro treino. A volta também melhorou (`cycle_l1` 0,126 contra 0,130).
+2. **Venceu o 1º treino em todos os checkpoints a partir da época 15.** Nas épocas 5 e 10 ficou atrás: com o recorte, o problema é mais difícil e o começo é mais lento.
+3. **O FID oscila entre as épocas 25 e 35** (120,4 → 122,4 → 122,1) e só volta a cair na 40, com o lr perto de zero. O 1º treino teve o mesmo padrão (124,2 → 130,9 → 128,2 → 125,3). A variação de ~2 pontos entre checkpoints vizinhos é da ordem do ruído. Já a vantagem sobre o 1º treino aparece em todos os checkpoints desde a época 15.
+4. **Na queda do lr, o D_pintura volta a ganhar terreno, mas bem menos.** Cai de 0,167 (época 20) para 0,097 (época 40). No 1º treino, caiu de 0,103 para 0,030. O recorte não impediu a tendência, só a atrasou: o treino termina mais ou menos onde o 1º treino estava na época 20.
+5. **Sem sinal de memorização:** distância média à pintura mais próxima de 93,1, igual à distância entre pinturas reais (93,2).
+6. **A diversidade caiu de 135,3 (época 20) para 130,8 (época 40)**, mas continua acima da do 1º treino (128,9) e longe de colapso (o modelo sem *cycle loss* teve 56,9).
+7. **Na grade da época 40**, os céus lisos (casinha, pôr do sol) ganham pinceladas sem o padrão de grade do 1º treino. O pato branco continua visível, mas amarelado. A praia ao entardecer (2ª foto) virou uma mancha de cores fortes em que o horizonte quase some. É uma grade só, de 8 fotos.
+
+**Sobre a previsão do autor ("vai ficar melhor"):** **confirmada** em todos os critérios escritos: FID abaixo de 125,3 ✓ (117,4), KID abaixo de 0,051 ✓ (0,036), D_pintura acima de 0,03 ✓ (0,097), diversidade perto de 137,7 ✓ (130,8, mais perto que o 1º treino).
+
 ## Conclusão e próximos passos
 
-O recorte aleatório deixou o discriminador de pinturas menos dominante e melhorou o resultado na mesma altura do treino, sem custo de tempo.
+O recorte aleatório melhorou o FID em ~8 pontos e o KID em ~30%, sem perder preservação do conteúdo e sem memorização. Ele passa a ser o padrão dos próximos treinos. O tempo total foi ~10% maior, mas a 1ª metade rodou no mesmo ritmo do 1º treino, então a diferença não pode ser atribuída ao recorte (veja o diário).
 
-- [ ] Continuar até a época 40 com **as mesmas opções** (sem o `--load-size 143`, o resto do treino rodaria sem recorte):
-  ```powershell
-  python -m src.train_cyclegan --epochs 40 --photos 2000 --load-size 143 --out cyclegan_crop --resume outputs/cyclegan_crop/checkpoints/epoch_020.pt
-  python -m src.evaluate --model cyclegan_crop
-  python -m src.plots
-  ```
-- [ ] Depois, ver se a queda do lr (épocas 21 a 40) leva o FID abaixo de 125,3 e se o D_pintura volta a dominar no fim, como aconteceu no primeiro treino.
+- [x] Continuar até a época 40 com as mesmas opções (2026-10-31).
+- [x] Ver se a queda do lr leva o FID abaixo de 125,3: sim, 117,4. O D_pintura voltou a ganhar terreno no fim, mas menos (0,097 contra 0,030).
+- [ ] Próximo experimento: uma das mudanças restantes da seção 11 do notebook 03, mantendo o recorte.

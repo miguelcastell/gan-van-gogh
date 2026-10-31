@@ -1,0 +1,9 @@
+{
+  "inicio": "2026-10-31T13:15:03",
+  "passos": [
+    {"passo": "treino_crop_retomada", "inicio": "2026-10-31T13:15:03", "minutos": 98.2, "codigo_saida": 0},
+    {"passo": "avaliacao_crop_retomada", "inicio": "2026-10-31T14:53:17", "minutos": 0.7, "codigo_saida": 0},
+    {"passo": "plots_retomada", "inicio": "2026-10-31T14:54:01", "minutos": 0.1, "codigo_saida": 0}
+  ],
+  "fim": "2026-10-31T14:54:07"
+}

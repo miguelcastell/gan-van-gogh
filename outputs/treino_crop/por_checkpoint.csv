@@ -1,0 +1,9 @@
+modelo,epoca,fid,kid,diversidade,cycle_l1
+cyclegan_crop,5,178.0,0.1034,127.4,0.179
+cyclegan_crop,10,153.6,0.0768,137.8,0.153
+cyclegan_crop,15,141.7,0.0584,135.1,0.151
+cyclegan_crop,20,126.0,0.0421,135.3,0.147
+cyclegan_crop,25,120.4,0.0370,128.7,0.133
+cyclegan_crop,30,122.4,0.0380,126.6,0.131
+cyclegan_crop,35,122.1,0.0400,129.9,0.130
+cyclegan_crop,40,117.4,0.0360,130.8,0.126

@@ -46,6 +46,13 @@ Rodou durante a noite: a CycleGAN completa e a versão sem *cycle loss*, 40 épo
 - [ ] Testar o céu de Van Gogh numa foto sua: `python -m src.stylize sua_foto.jpg`
 - [ ] Escolher a próxima mudança a testar (seção 11 do notebook 03) e **escrever a previsão** antes de treinar
 
+## Feito: recorte aleatório (2026-10-30 a 2026-10-31)
+
+Primeira mudança da seção 11 do notebook 03. Com ela, o modelo chegou a FID 117,4 (antes, 125,3). Detalhes no [registro do experimento](../experimentos/2026-10-30-recorte-aleatorio.md).
+
+- [x] Treino de 40 épocas com `--load-size 143`, avaliação e gráficos
+- [ ] Próximo treino: outra mudança da seção 11, mantendo o recorte e **escrevendo a previsão antes**
+
 ## Esta semana: confirmar com o professor
 
 - [ ] Formato da entrega (notebook, relatório, apresentação?)

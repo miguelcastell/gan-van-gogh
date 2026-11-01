@@ -1,0 +1,9 @@
+{
+  "inicio": "2026-10-31T22:32:40",
+  "passos": [
+    {"passo": "treino_256", "inicio": "2026-10-31T22:32:40", "minutos": 497.5, "codigo_saida": 0},
+    {"passo": "avaliacao_256", "inicio": "2026-11-01T06:50:11", "minutos": 1.0, "codigo_saida": 0},
+    {"passo": "plots", "inicio": "2026-11-01T06:51:11", "minutos": 0.3, "codigo_saida": 0}
+  ],
+  "fim": "2026-11-01T06:51:31"
+}

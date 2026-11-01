@@ -40,6 +40,27 @@ def resize(x: torch.Tensor, size: tuple[int, int]) -> torch.Tensor:
 
 
 @torch.no_grad()
+def pintar_ceu(G, img: torch.Tensor, size: int, device, mascara: bool = True):
+    """Aplica o gerador `G` em `img` (uint8, (3, H, W)) e cola o resultado só no céu.
+
+    Devolve (original, máscara, estilizada, resultado), todos em [-1, 1] com batch 1
+    (a máscara em [0, 1], sem batch).
+    """
+    h, w = img.shape[1:]
+    x = to_float(img)[None].to(device)
+
+    # O gerador roda numa versão menor da foto (lados múltiplos de 4) e o resultado volta
+    # ao tamanho original. A foto original não perde resolução fora do céu.
+    s = size / min(h, w)
+    small = (max(4, round(h * s / 4) * 4), max(4, round(w * s / 4) * 4))
+    stylized = resize(G(resize(x, small)), (h, w))
+
+    mask = sky_mask(img, device) if mascara else torch.ones(1, h, w, device=device)
+    result = composite(x, stylized, mask[None])
+    return x, mask, stylized, result
+
+
+@torch.no_grad()
 def main():
     args = parse_args()
     device = get_device()
@@ -58,19 +79,7 @@ def main():
         s = args.max_side / max(h, w)
         h, w = int(h * s), int(w * s)
         img = (to_unit(resize(to_float(img)[None], (h, w))[0]) * 255).round().byte()
-    x = to_float(img)[None].to(device)
-
-    # O gerador roda numa versão menor da foto (lados múltiplos de 4) e o resultado volta
-    # ao tamanho original. A foto original não perde resolução fora do céu.
-    s = args.size / min(h, w)
-    small = (max(4, round(h * s / 4) * 4), max(4, round(w * s / 4) * 4))
-    stylized = resize(G(resize(x, small)), (h, w))
-
-    if args.sem_mascara:
-        mask = torch.ones(1, h, w, device=device)
-    else:
-        mask = sky_mask(img, device)
-    result = composite(x, stylized, mask[None])
+    x, mask, stylized, result = pintar_ceu(G, img, args.size, device, mascara=not args.sem_mascara)
 
     out = OUTPUTS_DIR / "stylize"
     stem = f"{args.foto.stem}_{args.model}"

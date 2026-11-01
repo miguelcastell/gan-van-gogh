@@ -1,5 +1,6 @@
 # Dataset (baixado automaticamente)
-data/
+data/*
+!data/treinos/
 
 # Checkpoints são pesados; grades, logs e métricas são versionados
 outputs/**/checkpoints/

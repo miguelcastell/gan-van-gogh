@@ -154,6 +154,14 @@ Com o recorte, cada pintura pode chegar de 16 × 16 × 2 = 512 jeitos, contra 2 
 
 **Sobre a previsão do autor ("vai ficar melhor"):** **confirmada** em todos os critérios escritos: FID abaixo de 125,3 ✓ (117,4), KID abaixo de 0,051 ✓ (0,036), D_pintura acima de 0,03 ✓ (0,097), diversidade perto de 137,7 ✓ (130,8, mais perto que o 1º treino).
 
+## Teste do produto final: só o céu (2026-10-31)
+
+Com `python -m src.galeria` (o mesmo processo do `src.stylize`: SegFormer para a máscara do céu, gerador aplicado com o lado menor em 256 e colado só no céu), em 4 fotos de `testB` com bastante céu: [`ceu.png`](../../data/treinos/treino_03_cyclegan_crop/ceu.png).
+
+- **A máscara funcionou bem nas 4.** O templo, as palmeiras, a casinha e as árvores ficaram intactos, com borda limpa.
+- **O céu pintado ainda é pouco convincente.** São manchas de cor sem pinceladas definidas. Os céus lisos (casinha, templo) viraram uma textura acinzentada e borrada, e no pôr do sol (4ª foto) apareceram listras e o sol quase sumiu. No céu da praia, a pintura ficou com vermelho e amarelo fortes, mais perto do estilo.
+- **Parte do borrado é a resolução:** o gerador treinou em 128 e é aplicado em 256, e o resultado ainda é ampliado para o tamanho da foto. É o que o [treino em 256x256](2026-10-31-resolucao-256.md) testa.
+
 ## Conclusão e próximos passos
 
 O recorte aleatório melhorou o FID em ~8 pontos e o KID em ~30%, sem perder preservação do conteúdo e sem memorização. Ele passa a ser o padrão dos próximos treinos. O tempo total foi ~10% maior, mas a 1ª metade rodou no mesmo ritmo do 1º treino, então a diferença não pode ser atribuída ao recorte (veja o diário).

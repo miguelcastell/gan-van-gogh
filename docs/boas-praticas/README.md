@@ -15,3 +15,4 @@ Um arquivo por tema, adicionado na tabela abaixo. Sugestões de temas futuros:
 | Documento | Tema |
 |---|---|
 | [git.md](git.md) | Padrão de commits (Conventional Commits), escopos e o que versionar |
+| [figuras.md](figuras.md) | Imagens que todo treino deve deixar salvas e a comparação entre treinos (`src.comparar`) |

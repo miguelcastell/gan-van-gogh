@@ -58,7 +58,7 @@ Primeira mudança da seção 11 do notebook 03. Com ela, o modelo chegou a FID 1
 O objetivo do autor: que o gerador transforme **qualquer foto** numa pintura de Van Gogh, com pinceladas visíveis. O gerador já pinta a foto inteira (`src.stylize --sem-mascara`); a máscara do céu é só a composição final. Pincelada é detalhe fino, então os próximos treinos atacam a resolução e a capacidade do gerador, uma mudança por vez. As imagens de cada um ficam em [`data/treinos/`](../../data/treinos/README.md).
 
 - [x] Treino 04: 256x256 ([registro](../experimentos/2026-10-31-resolucao-256.md)), concluído em 2026-11-01. Melhorou bastante a aparência; métricas quase iguais
-- [ ] Treino 05: 256x256 + 9 blocos residuais (`--n-blocks 9`, o que o artigo usa em 256)
+- [ ] Treino 05: 256x256 + 9 blocos residuais (`--n-blocks 9`, o que o artigo usa em 256) ([registro](../experimentos/2026-11-02-nove-blocos.md)), rodando desde 2026-11-02 21:52
 - [ ] Depois: treinar por mais passos, se o modelo ainda estiver melhorando no fim
 
 **Descartado: filtrar só as pinturas com céu.** Reduziria as 400 pinturas para algo como 200, e o discriminador decoraria a coleção ainda mais rápido. Além disso, para pintar a foto inteira, as paisagens, os campos e as flores também ensinam pinceladas.

@@ -1,0 +1,6 @@
+Loading weights:   0%|          | 0/208 [00:00<?, ?it/s]Loading weights: 100%|██████████| 208/208 [00:00<00:00, 9874.76it/s]
+treino_01_cyclegan: época 25, FID 124.2
+treino_02_cyclegan_sem_cycle: época 15, FID 140.5
+treino_03_cyclegan_crop: época 40, FID 117.4
+treino_04_cyclegan_256: época 30, FID 123.5
+treino_05_cyclegan_256_9blocos: época 30, FID 122.3

@@ -61,15 +61,33 @@ Os mesmos do treino 04: as 400 pinturas de `trainA` e 2.000 fotos de `trainB` so
 |---|---|
 | 21:52 | Início, pelo script `outputs/rodar_treino_05.py` (treino → avaliação de cada checkpoint → `plots` → `comparar` → `galeria`), num processo separado. GPU registrada a cada 30 s em `gpu.csv` |
 | 22:08 | Época 1 em ~16 min (grade `samples/epoch_001.png` salva), no ritmo estimado: fim do treino previsto para ~08:45 de 03/11. GPU a 100%, 3,8 GB de VRAM, 74 °C. O `treino.log` e o `gpu.csv` ficam vazios durante o treino (a saída redirecionada para arquivo só é gravada em blocos); as losses por passo estão em `outputs/cyclegan_256_9blocos/logs.csv` |
+| 03/11 06:46 | **Interrompido a pedido do autor** (ia desligar o PC) durante a época 34. Ritmo constante de ~15,8 min por época a noite toda. Último checkpoint salvo: `epoch_030.pt` (05:45); as épocas 31–33 foram treinadas mas não salvas (só as grades `samples/epoch_031..033.png`). Nenhum checkpoint foi avaliado ainda. Para terminar: `python -m src.train_cyclegan --epochs 40 --photos 2000 --size 256 --load-size 286 --n-blocks 9 --out cyclegan_256_9blocos --resume outputs/cyclegan_256_9blocos/checkpoints/epoch_030.pt` (~2h40 para as épocas 31–40) |
+| 03/11 19:10 | **Retomado** do `epoch_030.pt` pelo mesmo `rodar_treino_05.py`, que agora aceita um checkpoint como argumento (`python outputs/rodar_treino_05.py outputs/cyclegan_256_9blocos/checkpoints/epoch_030.pt`) e roda a avaliação e os gráficos no fim, como na primeira execução. Antes de retomar, o `logs.csv` foi cortado no fim da época 30 (passo 59900), porque as épocas 31–34 vão ser refeitas e o resume acrescenta linhas ao arquivo. O original foi guardado em `logs_antes_retomada.csv`. Os logs desta parte ficam em `treino_retomada.log`, `gpu_retomada.csv` e `resumo_retomada.json`. Fim do treino previsto para ~21:50 |
+| 03/11 ~19:50 | **Treino encerrado de vez a pedido do autor**, que queria ver os resultados logo. Parou durante a época 32, então o modelo final é o `epoch_030.pt` (30 das 40 épocas planejadas, sem a parte final do decaimento linear da LR). O `logs.csv` foi cortado de novo na época 30. Tentei avaliar o checkpoint em paralelo com o treino, mas o autor interrompeu: a GPU não aguenta os dois juntos e o PC trava. Avaliação só com a GPU livre. Rodado só o `epoch_030` (evaluate → plots → comparar → galeria); os outros checkpoints ficam para depois, se for preciso |
 
 ## Resultado
 
-(preencher no fim)
+Só o `epoch_030.pt` foi avaliado (o treino parou na época 32; ver o diário). As métricas usam as 751 fotos de `testB` contra as 400 pinturas, tudo em 256x256.
+
+| Treino | Checkpoint | FID | Queda sobre as fotos sem conversão (195,6) | KID | Diversidade (pinturas: 289,4) | Ida e volta (L1) | Mudança foto→pintura (L1) |
+|---|---|---|---|---|---|---|---|
+| 04 (6 blocos) | época 30 (o melhor) | 123,5 | 36,9% | | | | |
+| 04 (6 blocos) | época 40 | 124,5 | 36,3% | 0,0360 | 277,0 | 0,111 | 0,222 |
+| **05 (9 blocos)** | **época 30** | **122,3** | **37,5%** | **0,0324 ± 0,0049** | **266,7** | **0,121** | **0,243** |
+
+Distância à pintura real mais próxima: 196,8 em média (entre pinturas reais: 203,0); a menor foi 129,4. Ou seja, sem memorização.
+
+**Figuras:** galeria [`treino_05_cyclegan_256_9blocos`](../../data/treinos/treino_05_cyclegan_256_9blocos/README.md) ([grade](../../data/treinos/treino_05_cyclegan_256_9blocos/grade.png), [céu](../../data/treinos/treino_05_cyclegan_256_9blocos/ceu.png)), [comparação com os outros treinos](../../report/figuras/comparacao_modelos.png), [curvas](../../report/figuras/cyclegan_256_9blocos_curvas.png), [piores casos](../../report/figuras/cyclegan_256_9blocos_piores.png).
 
 ## O que observei
 
-(preencher no fim)
+1. **No FID, empate com o treino 04.** Na mesma época (30), foram 122,3 contra 123,5: diferença de 1,2 ponto, bem abaixo da oscilação de ~4 pontos entre checkpoints vizinhos que definimos como limite. O KID também caiu um pouco (0,0324 contra 0,0360), mas dentro do desvio (± 0,005).
+2. **Nas imagens, o céu ganhou mais textura, nem sempre boa.** No céu da praia e no do templo, as pinceladas ficaram mais carregadas e com mais cores que no treino 04. No céu liso da casinha, a textura virou um padrão repetido verde-amarelado que parece mais ruído que pincelada.
+3. **O resto da foto ficou parecido com o treino 04:** os detalhes sobrevivem (janelas de Bruges, templo, bola de cristal), com um tom um pouco mais amarelo/esverdeado.
+4. **A transformação ficou um pouco mais forte:** a mudança foto→pintura subiu de 0,222 para 0,243 e o erro de ida e volta de 0,111 para 0,121. O gerador maior altera mais a foto e a reconstrói um pouco pior. A diversidade caiu um pouco (277,0 → 266,7), mas segue longe de colapso.
+
+**Sobre a previsão do autor ("melhor nas imagens e no FID", FID < ~120):** **não confirmada.** O FID ficou em 122,3, empatado com o treino 04 dentro do ruído. Nas imagens, há mais textura no céu, mas não uma melhora clara. Ressalva: o modelo teve só 30 das 40 épocas, sem o final do decaimento da LR, que no treino 04 não melhorou o FID (123,5 → 124,5), mas pode deixar as texturas mais limpas.
 
 ## Conclusão e próximos passos
 
-(preencher no fim)
+Com 400 pinturas, passar de 6 para 9 blocos não trouxe ganho mensurável em 30 épocas: a capacidade do gerador não parece ser o gargalo agora. O custo foi ~15,8 min por época, 27% a mais que os 12,4 min do treino 04. Para avaliar os outros checkpoints (5 a 25) e ver a curva do FID, rode `python -m src.evaluate --model cyclegan_256_9blocos --checkpoint epoch_0NN.pt` com a GPU livre.

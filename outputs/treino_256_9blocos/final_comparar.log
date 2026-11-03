@@ -1,0 +1,6 @@
+cyclegan: epoch_040.pt (128px)
+cyclegan_sem_cycle: epoch_040.pt (128px)
+cyclegan_crop: epoch_040.pt (128px)
+cyclegan_256: epoch_040.pt (256px)
+cyclegan_256_9blocos: epoch_030.pt (256px)
+Figura salva em C:\Users\Miguel\Desktop\codiguin\gan\report\figuras\comparacao_modelos.png

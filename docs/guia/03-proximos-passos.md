@@ -58,15 +58,38 @@ Primeira mudança da seção 11 do notebook 03. Com ela, o modelo chegou a FID 1
 O objetivo do autor: que o gerador transforme **qualquer foto** numa pintura de Van Gogh, com pinceladas visíveis. O gerador já pinta a foto inteira (`src.stylize --sem-mascara`); a máscara do céu é só a composição final. Pincelada é detalhe fino, então os próximos treinos atacam a resolução e a capacidade do gerador, uma mudança por vez. As imagens de cada um ficam em [`data/treinos/`](../../data/treinos/README.md).
 
 - [x] Treino 04: 256x256 ([registro](../experimentos/2026-10-31-resolucao-256.md)), concluído em 2026-11-01. Melhorou bastante a aparência; métricas quase iguais
-- [ ] Treino 05: 256x256 + 9 blocos residuais (`--n-blocks 9`, o que o artigo usa em 256) ([registro](../experimentos/2026-11-02-nove-blocos.md)), rodando desde 2026-11-02 21:52
-- [ ] Depois: treinar por mais passos, se o modelo ainda estiver melhorando no fim
+- [x] Treino 05: 256x256 + 9 blocos residuais ([registro](../experimentos/2026-11-02-nove-blocos.md)), encerrado na época 30. Empatou com o treino 04
+- [ ] ~~Treinar por mais passos~~: descartado por falta de tempo e de GPU (200 épocas em 256 levariam ~2 dias)
+- [ ] Treino 06: só fotos de céu marcado ([ADR 0008](../adr/0008-treinar-com-fotos-de-ceu.md), [registro](../experimentos/2026-11-03-fotos-de-ceu.md)). Interrompido na época 2 em 2026-11-03 (RAM baixa); rodar de novo do zero num PowerShell próprio
+- [x] Transferência de estilo neural com a Noite Estrelada, como comparação ([ADR 0009](../adr/0009-transferencia-neural-como-comparacao.md), [registro](../experimentos/2026-11-03-transferencia-neural.md))
 
 **Descartado: filtrar só as pinturas com céu.** Reduziria as 400 pinturas para algo como 200, e o discriminador decoraria a coleção ainda mais rápido. Além disso, para pintar a foto inteira, as paisagens, os campos e as flores também ensinam pinceladas.
 
-## Esta semana: confirmar com o professor
+## Como melhorar as imagens (levantado em 2026-11-03)
 
-- [ ] Formato da entrega (notebook, relatório, apresentação?)
-- [ ] Tamanho esperado do texto e critérios de avaliação
-- [ ] Individual ou em grupo
+O que os treinos 01 a 05 mostraram, do que mais muda o resultado para o que menos muda:
+
+1. **O que o gerador vê no treino.** No pipeline só o céu é pintado, então treinar só com fotos de céu marcado concentra o gerador no que importa ([ADR 0008](../adr/0008-treinar-com-fotos-de-ceu.md), treino 06).
+2. **A foto de entrada.** O modelo brilha em céus com estrutura (pôr do sol, nuvens marcadas) e falha em céu cinza liso, onde vira textura granulada. Na demonstração, use fotos boas e mostre um céu cinza como limitação.
+3. **O `--size` no `src.stylize`.** Menor = pinceladas maiores e imagem mais borrada; maior = mais nítido, mas pinceladas pequenas. Teste 256, 384 e 512 em cada foto.
+4. **Para a "Noite Estrelada no fundo", use a transferência neural** (`src.transferencia_estilo --so-ceu`, [ADR 0009](../adr/0009-transferencia-neural-como-comparacao.md)). A CycleGAN não cria redemoinhos onde a foto não tem estrutura; isso é limitação do método, não erro de treino.
+5. **O que muda pouco:** mais capacidade (9 blocos, treino 05) e alguns treinos a mais iguais aos anteriores. Treinar 200 épocas como no artigo levaria ~2 dias de GPU.
+
+**Treinos longos rodam num PowerShell próprio, fora do Claude Code.** Em 2026-11-03 o treino 06 foi encerrado pelo Claude Code porque a RAM do sistema ficou baixa. Feche o navegador antes e rode:
+
+```powershell
+.venv\Scripts\python.exe outputs\rodar_treino_06.py
+```
+
+## Entrega (até 2026-12-02)
+
+Combinado em 2026-11-03: **apresentação em slides** e um **notebook de apresentação** com samples, enviado ao professor. O trabalho é em grupo, mas só o autor está fazendo.
+
+- [x] Formato da entrega
+- [x] Individual ou em grupo
+- [ ] Tamanho esperado e critérios de avaliação
+- [ ] Análise ética: riscos de uso, viés, privacidade e limites da geração sintética (o único item do enunciado que ainda falta)
+- [ ] Notebook de apresentação: amostras, curvas, comparação entre treinos, CycleGAN x transferência neural, exemplos ruins
+- [ ] Slides
 
 Anterior: [Roteiro](02-roteiro-etapas.md) · Próximo: [Como aprender](04-como-aprender.md)

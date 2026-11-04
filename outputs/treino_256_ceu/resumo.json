@@ -1,0 +1,84 @@
+{
+  "inicio": "2026-11-03T22:46:07",
+  "passos": [
+    {
+      "passo": "treino",
+      "inicio": "2026-11-03T22:46:07",
+      "minutos": 379.6,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_005",
+      "inicio": "2026-11-04T05:05:40",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_010",
+      "inicio": "2026-11-04T05:06:41",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_015",
+      "inicio": "2026-11-04T05:07:38",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_020",
+      "inicio": "2026-11-04T05:08:36",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_025",
+      "inicio": "2026-11-04T05:09:33",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_030",
+      "inicio": "2026-11-04T05:10:30",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_035",
+      "inicio": "2026-11-04T05:11:27",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_epoch_040",
+      "inicio": "2026-11-04T05:12:24",
+      "minutos": 1.0,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "avaliacao_final",
+      "inicio": "2026-11-04T05:13:21",
+      "minutos": 0.9,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "plots",
+      "inicio": "2026-11-04T05:14:18",
+      "minutos": 0.1,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "comparar",
+      "inicio": "2026-11-04T05:14:23",
+      "minutos": 0.1,
+      "codigo_saida": 0
+    },
+    {
+      "passo": "galeria",
+      "inicio": "2026-11-04T05:14:31",
+      "minutos": 0.2,
+      "codigo_saida": 0
+    }
+  ],
+  "fim": "2026-11-04T05:14:42"
+}

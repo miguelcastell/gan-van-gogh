@@ -91,3 +91,11 @@ Distância à pintura real mais próxima: 196,8 em média (entre pinturas reais:
 ## Conclusão e próximos passos
 
 Com 400 pinturas, passar de 6 para 9 blocos não trouxe ganho mensurável em 30 épocas: a capacidade do gerador não parece ser o gargalo agora. O custo foi ~15,8 min por época, 27% a mais que os 12,4 min do treino 04. Para avaliar os outros checkpoints (5 a 25) e ver a curva do FID, rode `python -m src.evaluate --model cyclegan_256_9blocos --checkpoint epoch_0NN.pt` com a GPU livre.
+
+## Teste em alta resolução (03/11)
+
+Foto da Estátua da Liberdade em 1464x2022 ([Wikimedia Commons, `Statue_of_Liberty_7.jpg`](https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg)), céu nublado e cinza. `python -m src.stylize liberdade.jpg --model cyclegan_256_9blocos --size {256,512,768} --max-side 2048`, que pinta só o céu e mantém o resto na resolução original. Saídas em `outputs/stylize/liberdade/`.
+
+- **`--size 256`:** manchas em tons pastel (rosa, amarelo, azul), com cara de aquarela ou mármore e não de pinceladas. Por ser ampliado ~6x, o céu fica borrado, e aparece um halo em volta da estátua (a borda suave da máscara mistura a estátua estilizada).
+- **`--size 512` e `768`:** mais nítido e sem halo, mas o céu vira uma textura amarela e azul granulada, como papel manchado. Nenhum dos três mostra as pinceladas longas e curvas de Van Gogh.
+- **Leitura:** num céu cinza e liso, o gerador não tem bordas nem variações para transformar em pinceladas e inventa uma textura genérica. É o mesmo problema do céu liso da casinha na galeria. O modelo funciona melhor em céus que já têm estrutura (pôr do sol, nuvens bem marcadas).

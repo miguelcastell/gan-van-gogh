@@ -31,3 +31,7 @@ As 400 pinturas continuam todas.
 - O gerador fica pior em fotos sem céu (florestas, interiores), o que não importa para o pipeline, mas importa para pintar a foto inteira (`--sem-mascara`).
 - A avaliação continua nas 751 fotos de `testB` (todas), para ser comparável com os treinos anteriores. Isso tende a desfavorecer o treino 06 no FID, porque metade do `testB` tem pouco céu.
 - Uma época passa a ter 1.500 passos (eram 2.000).
+
+## Resultado (2026-11-04)
+
+O [treino 06](../experimentos/2026-11-03-fotos-de-ceu.md) não mostrou ganho claro: FID 127,1 contra 123,5 do treino 04, e o céu ficou mais saturado no pôr do sol, mas pior nas nuvens e no sol. A decisão continua registrada como foi tomada; qual modelo usar na entrega fica para depois da comparação com o `src.stylize`.

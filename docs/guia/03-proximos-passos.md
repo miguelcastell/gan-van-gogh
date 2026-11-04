@@ -60,7 +60,8 @@ O objetivo do autor: que o gerador transforme **qualquer foto** numa pintura de 
 - [x] Treino 04: 256x256 ([registro](../experimentos/2026-10-31-resolucao-256.md)), concluído em 2026-11-01. Melhorou bastante a aparência; métricas quase iguais
 - [x] Treino 05: 256x256 + 9 blocos residuais ([registro](../experimentos/2026-11-02-nove-blocos.md)), encerrado na época 30. Empatou com o treino 04
 - [ ] ~~Treinar por mais passos~~: descartado por falta de tempo e de GPU (200 épocas em 256 levariam ~2 dias)
-- [ ] Treino 06: só fotos de céu marcado ([ADR 0008](../adr/0008-treinar-com-fotos-de-ceu.md), [registro](../experimentos/2026-11-03-fotos-de-ceu.md)). Interrompido na época 2 em 2026-11-03 (RAM baixa); rodar de novo do zero num PowerShell próprio
+- [x] Treino 06: só fotos de céu marcado ([ADR 0008](../adr/0008-treinar-com-fotos-de-ceu.md), [registro](../experimentos/2026-11-03-fotos-de-ceu.md)), concluído em 2026-11-04. Sem ganho claro sobre o treino 04 (FID 127,1 contra 123,5)
+- [ ] Comparar `cyclegan_256` e `cyclegan_256_ceu` com o `src.stylize` nas fotos da demonstração e escolher o modelo da entrega
 - [x] Transferência de estilo neural com a Noite Estrelada, como comparação ([ADR 0009](../adr/0009-transferencia-neural-como-comparacao.md), [registro](../experimentos/2026-11-03-transferencia-neural.md))
 
 **Descartado: filtrar só as pinturas com céu.** Reduziria as 400 pinturas para algo como 200, e o discriminador decoraria a coleção ainda mais rápido. Além disso, para pintar a foto inteira, as paisagens, os campos e as flores também ensinam pinceladas.
@@ -75,7 +76,7 @@ O que os treinos 01 a 05 mostraram, do que mais muda o resultado para o que meno
 4. **Para a "Noite Estrelada no fundo", use a transferência neural** (`src.transferencia_estilo --so-ceu`, [ADR 0009](../adr/0009-transferencia-neural-como-comparacao.md)). A CycleGAN não cria redemoinhos onde a foto não tem estrutura; isso é limitação do método, não erro de treino.
 5. **O que muda pouco:** mais capacidade (9 blocos, treino 05) e alguns treinos a mais iguais aos anteriores. Treinar 200 épocas como no artigo levaria ~2 dias de GPU.
 
-**Treinos longos rodam num PowerShell próprio, fora do Claude Code.** Em 2026-11-03 o treino 06 foi encerrado pelo Claude Code porque a RAM do sistema ficou baixa. Feche o navegador antes e rode:
+**Cuidado com a RAM em treinos longos.** Em 2026-11-03, a primeira tentativa do treino 06 foi encerrada pelo Claude Code porque a RAM do sistema ficou baixa. A segunda, também pelo Claude Code, terminou sem problemas (6h20). Para garantir, feche o navegador antes ou rode num PowerShell próprio:
 
 ```powershell
 .venv\Scripts\python.exe outputs\rodar_treino_06.py

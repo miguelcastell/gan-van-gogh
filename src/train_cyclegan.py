@@ -29,6 +29,9 @@ def parse_args():
                    help="época em que o lr começa a cair até 0 (padrão: metade de --epochs)")
     p.add_argument("--photos", type=int, default=None,
                    help="usar só N fotos de treino (padrão: todas). Uma época = N passos")
+    p.add_argument("--photos-list", default=None,
+                   help="arquivo com os índices das fotos de treino a usar, um por linha "
+                        "(ex.: data/selecao_ceu/selecionadas.txt, de src.selecionar_fotos)")
     p.add_argument("--size", type=int, default=128)
     p.add_argument("--load-size", type=int, default=None,
                    help="carrega as imagens de treino nesse tamanho e recorta --size numa posição "
@@ -104,6 +107,9 @@ def main():
 
     pinturas = load_domain("pintura", train=True, size=args.load_size)
     fotos = load_domain("foto", train=True, size=args.load_size)
+    if args.photos_list is not None:
+        with open(args.photos_list, encoding="utf-8") as f:
+            fotos = fotos[torch.tensor([int(linha) for linha in f if linha.strip()])]
     if args.photos is not None:
         fotos = fotos[torch.randperm(fotos.size(0))[:args.photos]]
     steps_per_epoch = fotos.size(0) // args.batch_size

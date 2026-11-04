@@ -1,6 +1,9 @@
 # Dataset (baixado automaticamente)
 data/*
 !data/treinos/
+# Lista das fotos do treino 06 (reprodutibilidade) e a pintura de estilo, em domínio público
+!data/selecao_ceu/
+!data/estilos/
 
 # Checkpoints são pesados; grades, logs e métricas são versionados
 outputs/**/checkpoints/

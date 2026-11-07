@@ -1,0 +1,46 @@
+Dispositivo: cuda | saída: C:\Users\Miguel\Desktop\codiguin\gan\outputs\cyclegan_256_ceu_80
+λ_cycle 10.0 | λ_identity 5.0
+Pinturas: 400 | fotos: 1500 | passos por época: 1500
+Continuando da época 41 | lr 1.00e-04
+  ~396 ms por passo | estimativa: 9.9 min por época
+Época  41/80 | G_adv 0.283 | cycle 0.203 | D_pintura 0.092 | 9.6 min
+Época  42/80 | G_adv 0.629 | cycle 0.194 | D_pintura 0.039 | 9.4 min
+Época  43/80 | G_adv 0.753 | cycle 0.157 | D_pintura 0.204 | 9.4 min
+Época  44/80 | G_adv 0.422 | cycle 0.160 | D_pintura 0.122 | 9.4 min
+Época  45/80 | G_adv 0.104 | cycle 0.240 | D_pintura 0.113 | 9.4 min
+Época  46/80 | G_adv 0.330 | cycle 0.158 | D_pintura 0.087 | 9.4 min
+Época  47/80 | G_adv 0.356 | cycle 0.133 | D_pintura 0.033 | 9.4 min
+Época  48/80 | G_adv 0.276 | cycle 0.155 | D_pintura 0.215 | 9.4 min
+Época  49/80 | G_adv 0.314 | cycle 0.151 | D_pintura 0.207 | 9.4 min
+Época  50/80 | G_adv 0.373 | cycle 0.177 | D_pintura 0.102 | 9.4 min
+Época  51/80 | G_adv 0.532 | cycle 0.169 | D_pintura 0.198 | 9.4 min
+Época  52/80 | G_adv 0.228 | cycle 0.210 | D_pintura 0.140 | 9.4 min
+Época  53/80 | G_adv 0.453 | cycle 0.184 | D_pintura 0.189 | 9.4 min
+Época  54/80 | G_adv 0.975 | cycle 0.154 | D_pintura 0.056 | 9.4 min
+Época  55/80 | G_adv 1.132 | cycle 0.201 | D_pintura 0.149 | 9.4 min
+Época  56/80 | G_adv 0.350 | cycle 0.169 | D_pintura 0.153 | 9.4 min
+Época  57/80 | G_adv 1.093 | cycle 0.159 | D_pintura 0.094 | 9.4 min
+Época  58/80 | G_adv 0.839 | cycle 0.142 | D_pintura 0.158 | 9.4 min
+Época  59/80 | G_adv 0.152 | cycle 0.182 | D_pintura 0.073 | 9.4 min
+Época  60/80 | G_adv 0.560 | cycle 0.163 | D_pintura 0.201 | 9.4 min
+Época  61/80 | G_adv 0.600 | cycle 0.148 | D_pintura 0.114 | 9.4 min
+Época  62/80 | G_adv 0.536 | cycle 0.196 | D_pintura 0.115 | 9.4 min
+Época  63/80 | G_adv 0.547 | cycle 0.159 | D_pintura 0.172 | 9.4 min
+Época  64/80 | G_adv 0.705 | cycle 0.157 | D_pintura 0.081 | 9.4 min
+Época  65/80 | G_adv 0.200 | cycle 0.194 | D_pintura 0.294 | 9.4 min
+Época  66/80 | G_adv 0.356 | cycle 0.144 | D_pintura 0.249 | 9.4 min
+Época  67/80 | G_adv 0.340 | cycle 0.165 | D_pintura 0.157 | 9.4 min
+Época  68/80 | G_adv 0.289 | cycle 0.125 | D_pintura 0.275 | 9.4 min
+Época  69/80 | G_adv 0.469 | cycle 0.179 | D_pintura 0.125 | 9.4 min
+Época  70/80 | G_adv 0.867 | cycle 0.152 | D_pintura 0.126 | 9.4 min
+Época  71/80 | G_adv 0.156 | cycle 0.125 | D_pintura 0.248 | 9.4 min
+Época  72/80 | G_adv 0.765 | cycle 0.153 | D_pintura 0.175 | 9.4 min
+Época  73/80 | G_adv 0.353 | cycle 0.153 | D_pintura 0.119 | 9.4 min
+Época  74/80 | G_adv 0.661 | cycle 0.158 | D_pintura 0.059 | 9.4 min
+Época  75/80 | G_adv 0.575 | cycle 0.158 | D_pintura 0.102 | 9.4 min
+Época  76/80 | G_adv 0.688 | cycle 0.113 | D_pintura 0.066 | 9.4 min
+Época  77/80 | G_adv 0.267 | cycle 0.176 | D_pintura 0.105 | 9.4 min
+Época  78/80 | G_adv 0.873 | cycle 0.160 | D_pintura 0.114 | 9.4 min
+Época  79/80 | G_adv 0.640 | cycle 0.147 | D_pintura 0.198 | 9.4 min
+Época  80/80 | G_adv 0.705 | cycle 0.130 | D_pintura 0.117 | 9.4 min
+Treino concluído.

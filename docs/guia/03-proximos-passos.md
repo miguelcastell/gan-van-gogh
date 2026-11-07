@@ -61,7 +61,8 @@ O objetivo do autor: que o gerador transforme **qualquer foto** numa pintura de 
 - [x] Treino 05: 256x256 + 9 blocos residuais ([registro](../experimentos/2026-11-02-nove-blocos.md)), encerrado na época 30. Empatou com o treino 04
 - [ ] ~~Treinar por mais passos~~: descartado por falta de tempo e de GPU (200 épocas em 256 levariam ~2 dias)
 - [x] Treino 06: só fotos de céu marcado ([ADR 0008](../adr/0008-treinar-com-fotos-de-ceu.md), [registro](../experimentos/2026-11-03-fotos-de-ceu.md)), concluído em 2026-11-04. Sem ganho claro sobre o treino 04 (FID 127,1 contra 123,5)
-- [ ] Comparar `cyclegan_256` e `cyclegan_256_ceu` com o `src.stylize` nas fotos da demonstração e escolher o modelo da entrega
+- [x] Escolher o modelo da entrega: treino 06, `cyclegan_256_ceu` época 40 ([ADR 0010](../adr/0010-treino-06-como-modelo-da-entrega.md)), em 2026-11-04
+- [ ] Treinos 07 e 08: o treino 06 continuado até a época 80, com λ_identity 5 e 1 ([registro](../experimentos/2026-11-06-oitenta-epocas-e-identity.md)), iniciados em 2026-11-06
 - [x] Transferência de estilo neural com a Noite Estrelada, como comparação ([ADR 0009](../adr/0009-transferencia-neural-como-comparacao.md), [registro](../experimentos/2026-11-03-transferencia-neural.md))
 
 **Descartado: filtrar só as pinturas com céu.** Reduziria as 400 pinturas para algo como 200, e o discriminador decoraria a coleção ainda mais rápido. Além disso, para pintar a foto inteira, as paisagens, os campos e as flores também ensinam pinceladas.

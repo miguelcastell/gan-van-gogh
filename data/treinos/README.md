@@ -10,5 +10,6 @@ Uma pasta por treino, em ordem cronológica. Gerado por `python -m src.galeria`;
 | [04 `cyclegan_256`](treino_04_cyclegan_256/README.md) | 256px | 30 | 123.5 | [ceu.png](treino_04_cyclegan_256/ceu.png) |
 | [05 `cyclegan_256_9blocos`](treino_05_cyclegan_256_9blocos/README.md) (em andamento) | 256px | 30 | 122.3 | [ceu.png](treino_05_cyclegan_256_9blocos/ceu.png) |
 | [06 `cyclegan_256_ceu`](treino_06_cyclegan_256_ceu/README.md) | 256px | 40 | 127.1 | [ceu.png](treino_06_cyclegan_256_ceu/ceu.png) |
+| [07 `cyclegan_256_ceu_80`](treino_07_cyclegan_256_ceu_80/README.md) | 256px | 45 | 119.2 | [ceu.png](treino_07_cyclegan_256_ceu_80/ceu.png) |
 
 O FID só é comparável entre treinos da mesma resolução.

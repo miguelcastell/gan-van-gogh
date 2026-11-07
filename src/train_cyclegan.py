@@ -143,7 +143,13 @@ def main():
                           ("sched_g", sched_g), ("sched_d", sched_d)):
             obj.load_state_dict(ckpt[name])
         start_epoch = ckpt["epoch"] + 1
-        print(f"Continuando da época {start_epoch}")
+        # O otimizador volta com o LR da época em que o checkpoint foi salvo, e o LambdaLR só
+        # recalcula no fim da época. Se --epochs ou --decay-start mudaram, a época de retomada
+        # rodaria com o LR antigo (0, se o treino original tinha terminado). Recalcula já.
+        for opt, sched in ((opt_g, sched_g), (opt_d, sched_d)):
+            for group, base in zip(opt.param_groups, sched.base_lrs):
+                group["lr"] = base * lr_factor(sched.last_epoch)
+        print(f"Continuando da época {start_epoch} | lr {opt_g.param_groups[0]['lr']:.2e}")
 
     mse = nn.MSELoss()   # LSGAN: erro quadrático até o alvo (1 = real, 0 = falsa)
     l1 = nn.L1Loss()     # cycle e identity: diferença pixel a pixel

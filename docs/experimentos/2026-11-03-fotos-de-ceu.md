@@ -70,7 +70,7 @@ Distância à pintura real mais próxima: 197,0 em média (entre pinturas reais:
 
 ## O que observei
 
-Observações do Claude ao comparar o `ceu.png` do treino 06 com o do treino 04 e a `comparacao_modelos.png`. O autor ainda não viu as imagens.
+Observações do Claude ao comparar o `ceu.png` do treino 06 com o do treino 04 e a `comparacao_modelos.png`. A avaliação do autor está em [Decisão do autor](#decisão-do-autor-2026-11-04).
 
 1. **No FID, empate ou leve piora.** O melhor checkpoint ficou em 127,1, contra 123,5 do treino 04. A diferença de 3,6 pontos está no limite da oscilação de ~4 pontos entre checkpoints vizinhos. O KID da época 40 é praticamente igual (0,0356 contra 0,0360). Era o que a hipótese técnica esperava, porque metade do `testB` tem pouco céu.
 2. **A curva do FID oscilou mais e ainda caía no fim** (139,6 → 129,8 → 127,1 nas épocas 30, 35 e 40). No treino 04, a melhora tinha parado na época 30. Com menos fotos por época, o treino 06 deu 60.000 passos contra 80.000 do treino 04, e talvez ainda não tivesse estabilizado.
@@ -92,3 +92,9 @@ Sugestões, a decidir pelo autor:
 - **Modelo principal da entrega:** manter o treino 04 (época 30). O treino 06 pode aparecer nos slides como experimento de dados, com o pôr do sol da praia como o caso em que ele vai melhor.
 - **Teste barato antes de descartar o treino 06:** rodar `python -m src.stylize <foto> --model cyclegan_256_ceu` e o mesmo com `cyclegan_256` nas fotos da demonstração. A galeria tem só 4 céus.
 - **Sobre o ponto 2:** como o FID ainda caía na época 40, mais épocas poderiam ajudar, mas não vale a GPU agora, porque nada indica que o céu fique melhor que o do treino 04.
+
+## Decisão do autor (2026-11-04)
+
+O autor viu as imagens e discordou da sugestão acima: "curti muito os resultados, ficou muito top, realmente melhorou bastante". O treino 06 (época 40) é o modelo da entrega ([ADR 0010](../adr/0010-treino-06-como-modelo-da-entrega.md)).
+
+Também em 2026-11-04 o `stylize` foi rodado com o treino 06 na Estátua da Liberdade (`python -m src.stylize data/demo/liberdade.jpg --model cyclegan_256_ceu --size 512 --max-side 2048`, saída em `outputs/stylize/liberdade_cyclegan_256_ceu_painel.png`). O céu nublado e liso virou um azul-claro esbranquiçado com textura leve, sem pinceladas: a limitação em céu liso continua.

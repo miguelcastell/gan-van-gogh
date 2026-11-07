@@ -35,3 +35,5 @@ As 400 pinturas continuam todas.
 ## Resultado (2026-11-04)
 
 O [treino 06](../experimentos/2026-11-03-fotos-de-ceu.md) não mostrou ganho claro: FID 127,1 contra 123,5 do treino 04, e o céu ficou mais saturado no pôr do sol, mas pior nas nuvens e no sol. A decisão continua registrada como foi tomada; qual modelo usar na entrega fica para depois da comparação com o `src.stylize`.
+
+**Atualização (2026-11-04):** ao ver as imagens do céu, o autor achou o treino 06 claramente melhor e o escolheu como modelo da entrega ([ADR 0010](0010-treino-06-como-modelo-da-entrega.md)).

@@ -30,3 +30,4 @@ Um **ADR** (*Architecture Decision Record*) é um documento curto que registra *
 | [0007](0007-rastreamento-sem-mlflow.md) | Rastrear os experimentos com arquivos e git, sem MLflow | Proposto | 2026-10-29 |
 | [0008](0008-treinar-com-fotos-de-ceu.md) | Treinar só com fotos de céu marcado | Aceito | 2026-11-03 |
 | [0009](0009-transferencia-neural-como-comparacao.md) | Transferência de estilo neural como comparação | Aceito | 2026-11-03 |
+| [0010](0010-treino-06-como-modelo-da-entrega.md) | Treino 06 como modelo da entrega | Aceito | 2026-11-04 |
